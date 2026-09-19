@@ -1001,10 +1001,6 @@ function showToast(message) {
 }
 
 function openSubmit() {
-  if (!state.user) {
-    openAccount({ type: 'submit' });
-    return;
-  }
   elements.submitForm.hidden = false;
   elements.submitSuccess.hidden = true;
   const emailField = elements.submitForm.elements.namedItem('email');
