@@ -1,0 +1,16 @@
+{
+  "name": "sip-city-orlando",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node tests/dom-smoke.js"
+  },
+  "devDependencies": {
+    "jsdom": "^27.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "esbuild": "^0.25.9"
+  }
+}

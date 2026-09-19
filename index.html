@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#153c35" />
+    <meta name="description" content="A curated guide to happy hour around Orlando." />
+    <title>Sip City — Orlando Happy Hour Guide</title>
+    <script>
+      (() => {
+        const saved = localStorage.getItem('sip-city-theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved || preferred;
+      })();
+    </script>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#listings">Skip to listings</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Sip City home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><strong>Sip City</strong><small>Orlando, FL</small></span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#listings">Explore</a>
+        <a href="#how-it-works">How it works</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch color mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 15.1A8.5 8.5 0 0 1 8.9 3.3 8.5 8.5 0 1 0 20.7 15.1Z"/></svg>
+        </button>
+        <button class="account-button" id="account-button" type="button" aria-label="Sign in or open your dashboard">
+          <span class="account-avatar" id="account-avatar" aria-hidden="true">?</span>
+          <span id="account-label">Sign in</span>
+        </button>
+        <button class="button button-dark header-submit" data-open-submit>
+          <span aria-hidden="true">＋</span> Submit a deal
+        </button>
+      </div>
+    </header>
+
+    <div class="announcement-bar" id="announcement-bar" hidden>
+      <span id="announcement-text"></span>
+      <button type="button" id="dismiss-announcement" aria-label="Dismiss announcement">×</button>
+    </div>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse"></span><span id="hero-eyebrow-text">Your after-work shortcut</span></div>
+          <h1 id="hero-title"><span id="hero-title-main">Find Orlando’s</span><br /><em id="hero-title-accent">best hours.</em></h1>
+          <p id="hero-description">Discover standout drinks, bites, and neighborhood spots without digging through a dozen menus.</p>
+
+          <label class="hero-search" for="hero-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
+            <input id="hero-search" type="search" autocomplete="off" placeholder="Search venues, neighborhoods, or specials" />
+            <kbd>/</kbd>
+          </label>
+
+          <div class="hero-stats" aria-label="Directory overview">
+            <div><strong id="listing-stat">17</strong><span>Happy Hour Spots</span></div>
+            <div><strong>7</strong><span>neighborhoods</span></div>
+            <div><strong>Weekly</strong><span>update rhythm</span></div>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-label="Featured happy-hour photos">
+          <div class="hero-slides" aria-hidden="true">
+            <img class="hero-slide hero-slide-one" src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" fetchpriority="high" />
+            <img class="hero-slide hero-slide-two" src="https://images.firebirdsrestaurants.com/production/general/Steak-Tacos-FIREBAR-Hero.jpg?auto=format%2Cavif&amp;dm=1711397803&amp;fit=crop&amp;h=932&amp;q=80&amp;s=e745b176f18b1c56f52273302ac1373f&amp;w=1660" alt="" loading="lazy" />
+            <img class="hero-slide hero-slide-three" src="https://images.unsplash.com/photo-1546171753-97d7676e4602?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" loading="lazy" />
+          </div>
+          <div class="hero-photo-shade" aria-hidden="true"></div>
+          <div class="mini-card mini-card-one">
+            <span>TOP PICK</span>
+            <strong>$8 craft cocktails</strong>
+            <small>Lake Eola Social · 4–7 PM</small>
+          </div>
+          <div class="mini-card mini-card-two">
+            <span>BEST BITE</span>
+            <strong>Half-price flatbreads</strong>
+            <small>Winter Park · Weekdays</small>
+          </div>
+          <button class="hero-carousel-toggle" type="button" data-hero-carousel-toggle aria-label="Pause featured photos" aria-pressed="false">
+            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>
+            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="directory" id="listings" aria-labelledby="directory-title">
+        <div class="section-heading">
+          <div>
+            <span class="kicker">The shortlist</span>
+            <h2 id="directory-title">Good deals. Better plans.</h2>
+          </div>
+          <p id="directory-description">Browse local specials, save favorites, and confirm current offers with the venue before visiting.</p>
+        </div>
+
+        <div class="filter-shell">
+          <div class="filter-row">
+            <label class="filter-search" for="directory-search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
+              <input id="directory-search" type="search" autocomplete="off" placeholder="Search happy hours" />
+            </label>
+
+            <label class="select-wrap">
+              <span class="sr-only">Day</span>
+              <select id="day-filter">
+                <option value="today">Today</option>
+                <option value="monday">Monday</option>
+                <option value="tuesday">Tuesday</option>
+                <option value="wednesday">Wednesday</option>
+                <option value="thursday">Thursday</option>
+                <option value="friday">Friday</option>
+                <option value="saturday">Saturday</option>
+                <option value="sunday">Sunday</option>
+                <option value="all">Any day</option>
+              </select>
+            </label>
+
+            <label class="select-wrap">
+              <span class="sr-only">Sort listings</span>
+              <select id="sort-filter">
+                <option value="top">Top voted</option>
+                <option value="now">Happening Now</option>
+                <option value="soonest">Starts earliest</option>
+                <option value="az">A–Z</option>
+              </select>
+            </label>
+
+            <button id="clear-filters" class="text-button">Clear</button>
+          </div>
+          <div class="neighborhoods" id="neighborhoods" aria-label="Filter by neighborhood"></div>
+        </div>
+
+        <div class="results-bar" aria-live="polite">
+          <p><strong id="result-count">12 spots</strong><span id="result-context"> worth leaving work for</span></p>
+          <div class="legend"><span></span> Community score</div>
+        </div>
+
+        <div class="venue-grid" id="venue-grid"></div>
+
+        <div class="empty-state" id="empty-state" hidden>
+          <div aria-hidden="true">🍊</div>
+          <h3>No happy hours found</h3>
+          <p>Try another neighborhood, day, or search.</p>
+          <button class="button button-dark" id="empty-clear">Reset filters</button>
+        </div>
+      </section>
+
+      <section class="community" id="how-it-works" aria-labelledby="community-title">
+        <div>
+          <span class="kicker kicker-light">Built for locals</span>
+          <h2 id="community-title"><span id="community-title-main">Know a deal</span><br /><span id="community-title-accent">we’re missing?</span></h2>
+          <p id="community-description">Send it our way. Community votes help the most useful spots rise to the top, while new submissions stay in review until approved.</p>
+          <button class="button button-citrus" data-open-submit>Submit a happy hour <span aria-hidden="true">→</span></button>
+        </div>
+        <ol class="steps">
+          <li><span>01</span><div><strong>Locals submit</strong><p>Share the venue, timing, and specials.</p></div></li>
+          <li><span>02</span><div><strong>We review</strong><p>Details are checked before they appear.</p></div></li>
+          <li><span>03</span><div><strong>Orlando votes</strong><p>Helpful listings earn their place up top.</p></div></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand brand-footer" href="#top"><span class="brand-mark">S</span><span><strong>Sip City</strong><small>Orlando, FL</small></span></a>
+      <p>Made for the 407. Confirm current specials with each venue.</p>
+      <button class="text-button" data-open-submit>Suggest a spot</button>
+    </footer>
+
+    <dialog class="modal" id="detail-modal" aria-labelledby="detail-title">
+      <div class="modal-card detail-card">
+        <button class="modal-close" data-close-modal aria-label="Close details">×</button>
+        <div id="detail-content"></div>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="submit-modal" aria-labelledby="submit-title">
+      <div class="modal-card submit-card">
+        <button class="modal-close" data-close-modal aria-label="Close submission form">×</button>
+        <div class="form-heading">
+          <span class="kicker">Share a local find</span>
+          <h2 id="submit-title">Submit a happy hour</h2>
+          <p>Submissions are saved for review and do not publish automatically.</p>
+        </div>
+        <form id="submit-form">
+          <div class="field-grid">
+            <label><span>Venue name *</span><input name="venue" required placeholder="e.g. Citrus House" /></label>
+            <label><span>Neighborhood *</span><select name="neighborhood" required><option value="">Choose one</option><option>Downtown</option><option>Mills 50</option><option>Winter Park</option><option>Thornton Park</option><option>Ivanhoe Village</option><option>Milk District</option><option>College Park</option><option>Other</option></select></label>
+          </div>
+          <label><span>Happy-hour details *</span><textarea name="details" required rows="4" placeholder="Days, times, drinks, food specials…"></textarea></label>
+          <label><span>Source link</span><input name="source" type="url" placeholder="https://venue-menu-or-social-page.com" /></label>
+          <div class="upload-control">
+            <span class="upload-label">Menu or proof <small>(optional)</small></span>
+            <label class="upload-box" id="upload-box" for="menu-upload">
+              <input class="file-input" id="menu-upload" name="menuFile" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" />
+              <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg></span>
+              <span class="upload-copy"><strong id="upload-title">Drop a menu here or browse</strong><span id="upload-help">PDF, JPG, PNG, or WEBP · Up to 10 MB</span></span>
+            </label>
+            <div class="upload-status">
+              <span class="upload-error" id="upload-error" role="alert" hidden></span>
+              <button class="remove-upload" id="remove-upload" type="button" hidden>Remove file</button>
+            </div>
+          </div>
+          <label><span>Your email <small>(only for follow-up)</small></span><input name="email" type="email" placeholder="you@example.com" /></label>
+          <div class="form-actions"><button type="button" class="button button-ghost" data-close-modal>Cancel</button><button class="button button-dark" type="submit">Send for review <span aria-hidden="true">→</span></button></div>
+        </form>
+        <div class="success-state" id="submit-success" hidden>
+          <div class="success-icon">✓</div>
+          <h3>It’s in the queue.</h3>
+          <p>Thanks for helping Orlando find a better happy hour. Your submission is saved for review.</p>
+          <button class="button button-dark" data-close-modal>Done</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="account-modal" aria-labelledby="account-title">
+      <div class="modal-card account-card">
+        <button class="modal-close" data-close-modal aria-label="Close account sign in">×</button>
+        <div class="account-mark" aria-hidden="true">@</div>
+        <div class="form-heading account-heading">
+          <span class="kicker">Join the local crowd</span>
+          <h2 id="account-title">Create or sign in</h2>
+          <p>Choose a public username. We’ll email you a secure sign-in link so your private list follows you across devices.</p>
+        </div>
+        <form id="account-form">
+          <label><span>Username</span><span class="username-input"><b aria-hidden="true">@</b><input id="username-input" name="username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required placeholder="orlando_local" /></span></label>
+          <label><span>Email</span><input id="account-email-input" name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+          <p class="username-help">Use 3–20 letters, numbers, or underscores. Your email stays private and no password is required.</p>
+          <p class="username-error" id="username-error" role="alert" hidden></p>
+          <button class="button button-dark account-continue" id="account-submit" type="submit">Email my sign-in link <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="success-state" id="account-email-sent" hidden>
+          <div class="success-icon">✓</div>
+          <h3>Check your email.</h3>
+          <p>Open the secure link in the message from Supabase to finish signing in.</p>
+          <button class="button button-ghost" type="button" data-close-modal>Close for now</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="dashboard-modal" aria-labelledby="dashboard-title">
+      <div class="modal-card dashboard-card">
+        <button class="modal-close" data-close-modal aria-label="Close dashboard">×</button>
+        <div class="dashboard-header">
+          <div class="dashboard-identity">
+            <span class="dashboard-avatar" id="dashboard-avatar" aria-hidden="true">O</span>
+            <div><span class="kicker">Your Sip City account</span><h2 id="dashboard-title">@orlando_local</h2></div>
+          </div>
+          <button class="text-button sign-out" id="sign-out" type="button">Sign out</button>
+        </div>
+        <div class="dashboard-stats">
+          <div><strong id="favorite-count">0</strong><span>Saved spots</span></div>
+          <div><strong id="vote-count">0</strong><span>Votes cast</span></div>
+          <div><strong id="account-role">Member</strong><span>Account role</span></div>
+        </div>
+        <div class="owner-workspace" id="owner-workspace" hidden>
+          <div class="owner-banner"><span class="owner-crown" aria-hidden="true">★</span><div><strong>Owner controls</strong><p>Quickly update the live prototype without editing code.</p></div></div>
+          <div class="dashboard-tabs" role="tablist" aria-label="Owner dashboard sections">
+            <button class="dashboard-tab active" type="button" role="tab" data-owner-tab="favorites" aria-selected="true">Favorites</button>
+            <button class="dashboard-tab" type="button" role="tab" data-owner-tab="submissions" aria-selected="false">Submissions <span class="tab-count" id="submission-count">0</span></button>
+            <button class="dashboard-tab" type="button" role="tab" data-owner-tab="homepage" aria-selected="false">Homepage</button>
+            <button class="dashboard-tab" type="button" role="tab" data-owner-tab="listings" aria-selected="false">Listings</button>
+          </div>
+        </div>
+        <section class="dashboard-panel" id="favorites-panel" data-owner-panel="favorites">
+          <div class="dashboard-section-heading">
+            <div><span class="kicker">Your shortlist</span><h3>Favorite happy hours</h3></div>
+            <button class="button button-ghost dashboard-explore" type="button" data-close-modal>Explore more</button>
+          </div>
+          <div class="favorite-list" id="dashboard-favorites"></div>
+          <div class="dashboard-empty" id="dashboard-empty" hidden>
+            <span aria-hidden="true">♡</span>
+            <h3>Your favorites will live here.</h3>
+            <p>Tap the heart on any happy hour to build a private list.</p>
+            <button class="button button-dark" type="button" data-close-modal>Find a favorite</button>
+          </div>
+        </section>
+        <section class="dashboard-panel submissions-panel" id="submissions-panel" data-owner-panel="submissions" hidden>
+          <div class="dashboard-section-heading">
+            <div><span class="kicker">Owner review</span><h3>Happy-hour submissions</h3></div>
+            <button class="button button-ghost dashboard-explore" id="refresh-submissions" type="button">Refresh</button>
+          </div>
+          <p class="submission-intro">Review submitted details and private attachments. Build a listing to edit it before publishing, or reject it with an optional note.</p>
+          <div class="submission-queue" id="submission-queue" aria-live="polite"></div>
+          <div class="dashboard-empty" id="submission-empty" hidden>
+            <span aria-hidden="true">✓</span>
+            <h3>No submissions yet.</h3>
+            <p>New community submissions will appear here for review.</p>
+          </div>
+        </section>
+        <section class="dashboard-panel owner-editor" id="homepage-panel" data-owner-panel="homepage" hidden>
+          <div class="editor-heading"><div><span class="kicker">Quick edit</span><h3>Homepage content</h3></div><span class="save-state" id="homepage-save-state">Saved locally</span></div>
+          <form id="homepage-editor">
+            <div class="editor-toggle-row"><label class="switch-label" for="announcement-enabled"><span><strong>Announcement bar</strong><small>Show a message above the homepage</small></span><span class="switch"><input id="announcement-enabled" name="announcementEnabled" type="checkbox" /><i></i></span></label></div>
+            <label><span>Announcement text</span><input name="announcementText" maxlength="100" /></label>
+            <div class="field-grid"><label><span>Hero label</span><input name="heroEyebrow" maxlength="45" /></label><label><span>Hero first line</span><input name="heroTitleMain" maxlength="35" /></label></div>
+            <label><span>Hero highlighted line</span><input name="heroTitleAccent" maxlength="35" /></label>
+            <label><span>Hero description</span><textarea name="heroDescription" rows="3" maxlength="220"></textarea></label>
+            <label><span>Listings heading</span><input name="directoryTitle" maxlength="60" /></label>
+            <label><span>Listings note</span><textarea name="directoryDescription" rows="3" maxlength="240"></textarea></label>
+            <div class="form-actions editor-actions"><button class="button button-ghost" id="reset-homepage" type="button">Restore defaults</button><button class="button button-dark" type="submit">Save homepage</button></div>
+          </form>
+        </section>
+        <section class="dashboard-panel owner-editor" id="listings-panel" data-owner-panel="listings" hidden>
+          <div class="editor-heading"><div><span class="kicker">Quick edit</span><h3>Happy-hour listings</h3></div><button class="button button-ghost" id="new-listing" type="button">＋ New listing</button></div>
+          <p class="save-state" id="listing-save-state">Choose a listing</p>
+          <form id="listing-editor">
+            <label><span>Listing to edit</span><select id="listing-select" name="listingId"></select></label>
+            <div class="field-grid"><label><span>Venue name</span><input name="name" required maxlength="60" /></label><label><span>Neighborhood</span><input name="neighborhood" required maxlength="40" /></label></div>
+            <label><span>Address</span><input name="address" required maxlength="120" /></label>
+            <div class="field-grid"><label><span>Website or menu URL</span><input name="website" type="url" placeholder="https://" /></label><label><span>Image URL</span><input name="image" type="url" required placeholder="https://" /></label></div>
+            <div class="field-grid"><label><span>Happy-hour time</span><input name="time" required maxlength="35" /></label><label><span>Start hour</span><input name="start" type="number" min="0" max="23.75" step="0.25" required /></label></div>
+            <div class="field-grid"><label><span>Price level</span><select name="price"><option>$</option><option>$$</option><option>$$$</option><option>$$$$</option></select></label><label><span>Days</span><input name="days" required placeholder="monday, tuesday, friday" /></label></div>
+            <div class="editor-specials">
+              <div class="editor-specials-heading">
+                <span><strong>Happy-hour specials</strong><small>Add one special per line</small></span>
+                <div class="special-tabs editor-special-tabs" role="tablist" aria-label="Special type">
+                  <button class="special-tab active" id="listing-drinks-tab" type="button" role="tab" aria-selected="true" aria-controls="listing-drinks-panel" data-editor-deal-tab="drinks">Drinks</button>
+                  <button class="special-tab" id="listing-food-tab" type="button" role="tab" aria-selected="false" aria-controls="listing-food-panel" tabindex="-1" data-editor-deal-tab="food">Food</button>
+                </div>
+              </div>
+              <div class="editor-special-panel" id="listing-drinks-panel" role="tabpanel" aria-labelledby="listing-drinks-tab" data-editor-deal-panel="drinks">
+                <label><span>Drink specials</span><textarea name="drinkDeals" rows="5" maxlength="1200" placeholder="$8 house cocktails&#10;$5 local drafts"></textarea></label>
+              </div>
+              <div class="editor-special-panel" id="listing-food-panel" role="tabpanel" aria-labelledby="listing-food-tab" data-editor-deal-panel="food" hidden>
+                <label><span>Food specials</span><textarea name="foodDeals" rows="5" maxlength="1200" placeholder="Half-price appetizers&#10;$7 sliders"></textarea></label>
+              </div>
+              <label class="editor-special-details"><span>Details shown with both tabs <small>Optional timing, restrictions, or notes</small></span><textarea name="infoDeals" rows="3" maxlength="800" placeholder="Available Tuesday only&#10;Dine-in only"></textarea></label>
+            </div>
+            <label><span>Tags</span><input name="tags" maxlength="100" placeholder="Patio, Cocktails" /></label>
+            <div class="field-grid"><label><span>Vibe</span><input name="vibe" maxlength="70" /></label><label><span>Parking</span><input name="parking" maxlength="80" /></label></div>
+            <div class="editor-toggle-row"><label class="switch-label" for="listing-published"><span><strong>Published</strong><small>Show this listing in the public directory</small></span><span class="switch"><input id="listing-published" name="published" type="checkbox" checked /><i></i></span></label></div>
+            <div class="form-actions editor-actions"><button class="button button-ghost" id="reset-listing" type="button">Undo changes</button><button class="button button-dark" id="save-listing" type="submit">Save listing</button></div>
+          </form>
+        </section>
+        <p class="prototype-note">Accounts, private lists, votes, submissions, uploads, and owner edits are securely saved in Supabase.</p>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="supabase-client.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
