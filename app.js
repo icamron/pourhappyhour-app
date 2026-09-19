@@ -104,6 +104,8 @@ const venueData = [
   }
 ];
 
+const placeholderVenueImage = 'assets/venue-placeholder.svg';
+
 const dealCategoryOverrides = {
   'lake-eola-social': ['drinks', 'drinks', 'food'],
   'citrus-and-rye': ['drinks', 'drinks', 'food'],
@@ -314,7 +316,7 @@ function fillListingEditor(id = elements.listingSelect.value || venueData[0].id)
   const isNew = id === '__new';
   const venue = isNew ? {
     id: '__new', name: '', neighborhood: '', address: '', website: '',
-    image: 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1000&q=85',
+    image: '',
     days: ['monday','tuesday','wednesday','thursday','friday'], start: 16,
     time: '4–7 PM', price: '$$', deals: [], dealCategories: [], tags: [], vibe: '', parking: '', published: true
   } : venueData.find(item => item.id === id) || venueData[0];
@@ -653,16 +655,19 @@ function cardMarkup(venue) {
   const favorite = isFavorite(venue.id);
   const available = venue.days.includes(activeDay());
   const happeningNow = isHappeningNow(venue);
+  const scheduleText = venue.schedule?.length
+    ? venue.time
+    : `${venue.time} · ${venue.days.length === 7 ? 'Daily' : venue.days.map(d => d.slice(0,3)).join(' · ')}`;
   return `
     <article class="venue-card" data-id="${venue.id}">
       <div class="card-image">
-        <img src="${venue.image}" alt="Photo representing ${venue.name}" loading="lazy" />
-        <div class="image-tags"><span class="price-pill">${venue.price}</span></div>
+        <img src="${venueImage(venue)}" alt="${venue.image ? `Photo representing ${venue.name}` : ''}" loading="lazy" onerror="this.onerror=null;this.src='${placeholderVenueImage}'" />
+        ${venue.price ? `<div class="image-tags"><span class="price-pill">${venue.price}</span></div>` : ''}
       </div>
       <button class="card-main" data-view="${venue.id}" aria-label="View details for ${venue.name}">
         <div class="card-location"><span>${venue.neighborhood}</span>${happeningNow ? '<span class="now-badge">● Happening now</span>' : available ? '<span class="today-badge">● Today</span>' : ''}</div>
         <h3>${venue.name}</h3>
-        <div class="schedule-line"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${venue.time} · ${venue.days.length === 7 ? 'Daily' : venue.days.map(d => d.slice(0,3)).join(' · ')}</span></div>
+        <div class="schedule-line"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${scheduleText}</span></div>
         <p class="deal-list">${venue.deals.slice(0,2).join(' · ')}</p>
       </button>
       <div class="card-footer">
@@ -739,7 +744,7 @@ function mapDatabaseVenue(row, scoreById = {}) {
     neighborhood: row.neighborhood,
     address: row.address,
     website: row.website || '',
-    image: row.image_url,
+    image: row.image_url || '',
     days: row.days || [],
     start: Number(row.start_hour),
     time: row.time_label,
@@ -752,8 +757,18 @@ function mapDatabaseVenue(row, scoreById = {}) {
     vibe: row.vibe || '',
     parking: row.parking || '',
     published: row.published !== false,
-    schedule: customVenueSchedules[row.id] || []
+    schedule: Array.isArray(row.schedule) && row.schedule.length
+      ? row.schedule.map(window => ({
+          days: Array.isArray(window.days) ? window.days : [],
+          start: Number(window.start),
+          end: Number(window.end)
+        }))
+      : customVenueSchedules[row.id] || []
   };
+}
+
+function venueImage(venue) {
+  return venue.image || placeholderVenueImage;
 }
 
 function categorizedVenueDeals(venue) {
@@ -876,7 +891,7 @@ async function hydrateSession(session, announce = false) {
 
 function favoriteRowMarkup(venue) {
   return `<article class="favorite-row" data-dashboard-id="${venue.id}">
-    <img src="${venue.image}" alt="" />
+    <img src="${venueImage(venue)}" alt="" onerror="this.onerror=null;this.src='${placeholderVenueImage}'" />
     <div class="favorite-row-copy"><span>${venue.neighborhood} · ${venue.time}</span><strong>${venue.name}</strong><small>${venue.deals[0]}</small></div>
     <div class="favorite-row-actions">
       <button class="favorite-open" type="button" data-dashboard-view="${venue.id}">View</button>
@@ -967,22 +982,23 @@ function showDetails(id) {
   const venue = venueData.find(v => v.id === id);
   if (!venue) return;
   const days = venue.days.map(d => d[0].toUpperCase() + d.slice(1,3)).join(', ');
+  const scheduleText = venue.schedule?.length ? venue.time : `${days} · ${venue.time}`;
   const mapQuery = encodeURIComponent(`${venue.name}, ${venue.address}`);
   elements.detailContent.innerHTML = `
-    <div class="detail-hero" style="background-image:url('${venue.image}')">
+    <div class="detail-hero" style="background-image:url('${venueImage(venue)}')">
       <div><span class="kicker">${venue.neighborhood}</span><h2 id="detail-title">${venue.name}</h2></div>
     </div>
     <div class="detail-body">
       <div class="detail-meta">
-        <div class="meta-box"><span>Happy hour</span><strong>${days} · ${venue.time}</strong></div>
+        <div class="meta-box"><span>Happy hour</span><strong>${scheduleText}</strong></div>
         <div class="meta-box"><span>Community score</span><strong>${currentScore(venue)} points</strong></div>
-        <div class="meta-box"><span>Vibe</span><strong>${venue.vibe}</strong></div>
-        <div class="meta-box"><span>Parking</span><strong>${venue.parking}</strong></div>
+        ${venue.vibe ? `<div class="meta-box"><span>Vibe</span><strong>${venue.vibe}</strong></div>` : ''}
+        ${venue.parking ? `<div class="meta-box"><span>Parking</span><strong>${venue.parking}</strong></div>` : ''}
       </div>
       ${venueSpecialsMarkup(venue)}
       <div class="detail-note"><strong>Good to know:</strong> Specials can change. Confirm pricing and availability with the venue before visiting.</div>
       <div class="venue-links">
-        ${venue.website ? `<a href="${venue.website}" target="_blank" rel="noreferrer">Official website <span aria-hidden="true">↗</span></a>` : ''}
+        ${venue.website ? `<a href="${venue.website}" target="_blank" rel="noreferrer">Venue link <span aria-hidden="true">↗</span></a>` : ''}
         <a href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank" rel="noreferrer">View map <span aria-hidden="true">↗</span></a>
       </div>
       <div class="detail-actions">
@@ -1355,6 +1371,7 @@ elements.listingEditor.addEventListener('submit', async event => {
     tags: fields.namedItem('tags').value.split(',').map(tag => tag.trim()).filter(Boolean),
     vibe: fields.namedItem('vibe').value.trim(),
     parking: fields.namedItem('parking').value.trim(),
+    schedule: existingVenue?.schedule || [],
     published: fields.namedItem('published').checked
   };
   elements.listingSaveState.classList.remove('saved', 'error');

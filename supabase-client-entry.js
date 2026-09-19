@@ -117,6 +117,7 @@ window.SipCityDb = {
       tags: venue.tags,
       vibe: venue.vibe,
       parking: venue.parking,
+      schedule: venue.schedule || [],
       published: venue.published !== false
     };
     const query = isNew
