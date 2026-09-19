@@ -687,6 +687,11 @@ function cardMarkup(venue) {
 function render() {
   const venues = selectedVenues();
   document.querySelector('#listing-stat').textContent = venueData.length;
+  document.querySelector('#neighborhood-stat').textContent = new Set(
+    venueData
+      .map(venue => String(venue.neighborhood || '').trim().toLocaleLowerCase())
+      .filter(Boolean)
+  ).size;
   elements.grid.innerHTML = venues.map(cardMarkup).join('');
   elements.count.textContent = `${venues.length} ${venues.length === 1 ? 'spot' : 'spots'}`;
   elements.context.textContent = state.sort === 'now'
