@@ -293,6 +293,7 @@ const elements = {
 let selectedAttachment = null;
 const allowedAttachmentTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
 const maxAttachmentSize = 10 * 1024 * 1024;
+const submissionNotificationUrl = 'https://formsubmit.co/ajax/huntsvilledesigns@gmail.com';
 const originalHeroPhotos = [...elements.heroSlides.querySelectorAll('[data-hero-original]')].map(image => image.src);
 const featuredHeroVenueNames = [
   'Aroma Gastro Bar',
@@ -377,6 +378,29 @@ function refreshHeroCarousel(sourceVenues = venueData) {
 
 function isOwner() {
   return state.role === 'owner';
+}
+
+async function sendSubmissionNotification(submission) {
+  const emailData = new FormData();
+  emailData.set('_subject', `New Pour Happy submission: ${submission.venue_name}`);
+  emailData.set('_template', 'table');
+  emailData.set('_captcha', 'false');
+  emailData.set('Venue', submission.venue_name);
+  emailData.set('Neighborhood', submission.neighborhood);
+  emailData.set('Happy-hour details', submission.details);
+  emailData.set('Source link', submission.source_url || 'Not provided');
+  emailData.set('Submitter email', submission.contact_email || 'Not provided');
+  emailData.set('Attachment', submission.attachment_name || 'None');
+  emailData.set('Next step', 'Sign in to the Pour Happy owner dashboard and open the Submissions tab.');
+  const response = await fetch(submissionNotificationUrl, {
+    method: 'POST',
+    body: emailData,
+    headers: { Accept: 'application/json' }
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success === false || result.success === 'false') {
+    throw new Error(result.message || 'Submission email could not be sent');
+  }
 }
 
 function applySiteContent() {
@@ -1610,7 +1634,7 @@ elements.submitForm.addEventListener('submit', async event => {
   let attachmentPath = null;
   try {
     if (selectedAttachment) attachmentPath = await db.uploadSubmissionFile(state.userId, selectedAttachment);
-    await db.createSubmission({
+    const submission = {
       submitted_by: state.userId,
       venue_name: formData.get('venue').trim(),
       neighborhood: formData.get('neighborhood'),
@@ -1622,7 +1646,14 @@ elements.submitForm.addEventListener('submit', async event => {
       attachment_type: selectedAttachment?.type || null,
       attachment_size: selectedAttachment?.size || null,
       status: 'pending'
-    });
+    };
+    await db.createSubmission(submission);
+    try {
+      await sendSubmissionNotification(submission);
+    } catch (notificationError) {
+      console.error(notificationError);
+      showToast('Submission saved. The email notification could not be sent.');
+    }
     elements.submitForm.reset();
     resetAttachment();
     elements.submitForm.hidden = true;
