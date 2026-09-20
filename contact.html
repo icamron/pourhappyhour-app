@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#153c35" />
+    <meta name="description" content="Contact Pourh about an Orlando restaurant, happy hour, partnership, or question." />
+    <title>Contact | Sip City Orlando</title>
+    <script>
+      (() => {
+        const saved = localStorage.getItem('sip-city-theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved || preferred;
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="contact-page-body">
+    <a class="skip-link" href="#contact-form">Skip to contact form</a>
+
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Sip City home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><strong>Sip City</strong><small>Orlando, FL</small></span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="index.html#listings">Explore</a>
+        <a href="index.html#how-it-works">How it works</a>
+        <a href="contact.html" aria-current="page">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch color mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 15.1A8.5 8.5 0 0 1 8.9 3.3 8.5 8.5 0 1 0 20.7 15.1Z"/></svg>
+        </button>
+        <a class="mobile-contact-link" href="index.html">Home</a>
+        <a class="button button-dark contact-header-cta" href="index.html#listings">Browse spots</a>
+      </div>
+    </header>
+
+    <main class="contact-main">
+      <section class="contact-shell" aria-labelledby="contact-title">
+        <div class="contact-intro">
+          <span class="kicker">Pourh partnerships + questions</span>
+          <h1 id="contact-title">Let’s talk<br /><em>happy hour.</em></h1>
+          <p>Own or manage a restaurant? Have a listing question? Send the details and we’ll get back to you.</p>
+          <div class="contact-local-note"><strong>407</strong><span>Built for Orlando restaurants, locals, and better plans.</span></div>
+        </div>
+
+        <div class="contact-form-card">
+          <div class="contact-form-heading">
+            <span class="kicker">Send a message</span>
+            <h2>Contact us</h2>
+          </div>
+          <form id="contact-form" action="https://formsubmit.co/ajax/huntsvilledesigns@gmail.com" method="POST">
+            <input type="hidden" name="_subject" value="New Pourh contact form message" />
+            <input type="hidden" name="_template" value="table" />
+            <input class="contact-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <label><span>Name</span><input name="Name" type="text" autocomplete="name" maxlength="80" required /></label>
+            <label><span>Phone</span><input name="Phone" type="tel" autocomplete="tel" maxlength="30" required /></label>
+            <label><span>Email</span><input name="email" type="email" autocomplete="email" maxlength="120" required /></label>
+            <label><span>Details</span><textarea name="Details" rows="6" maxlength="2000" required></textarea></label>
+            <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
+            <button class="button button-dark contact-submit" id="contact-submit" type="submit">Submit <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="contact-success" id="contact-success" tabindex="-1" hidden>
+            <span aria-hidden="true">✓</span>
+            <h2>Message sent.</h2>
+            <p>Thanks for reaching out. We’ll review your message and follow up by email or phone.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand brand-footer" href="index.html"><span class="brand-mark">S</span><span><strong>Sip City</strong><small>Orlando, FL</small></span></a>
+      <p>Made for the 407. Confirm current specials with each venue.</p>
+      <a class="text-button" href="index.html#listings">Explore happy hours</a>
+    </footer>
+
+    <script src="contact.js"></script>
+  </body>
+</html>
