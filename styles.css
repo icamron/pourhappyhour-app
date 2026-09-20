@@ -98,16 +98,21 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .hero-art { min-height: 650px; position: relative; isolation: isolate; background: #153c35; border-bottom-left-radius: 100px; overflow: hidden; }
 .hero-slides, .hero-slide, .hero-photo-shade { position: absolute; inset: 0; }
 .hero-slides { z-index: -2; background: #153c35; }
-.hero-slide { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transform: scale(1.025); animation: hero-photo-cycle 18s infinite; }
-.hero-slide-two { animation-delay: 6s; }
-.hero-slide-three { animation-delay: 12s; }
+.hero-slide { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transform: scale(1.025); animation-duration: var(--hero-cycle-duration, 18s); animation-delay: var(--hero-slide-delay, 0s); animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.hero-slides[data-count="3"] .hero-slide { animation-name: hero-photo-cycle-3; }
+.hero-slides[data-count="4"] .hero-slide { animation-name: hero-photo-cycle-4; }
+.hero-slides[data-count="5"] .hero-slide { animation-name: hero-photo-cycle-5; }
+.hero-slides[data-count="6"] .hero-slide { animation-name: hero-photo-cycle-6; }
+.hero-slides[data-count="7"] .hero-slide { animation-name: hero-photo-cycle-7; }
+.hero-slides[data-count="8"] .hero-slide { animation-name: hero-photo-cycle-8; }
 .hero-photo-shade { z-index: -1; background: linear-gradient(180deg, rgba(5,24,20,.12), rgba(5,24,20,.42)), linear-gradient(90deg, rgba(5,24,20,.2), transparent 55%); }
 .hero-art.is-paused .hero-slide { animation-play-state: paused; }
-@keyframes hero-photo-cycle {
-  0%, 30% { opacity: 1; transform: scale(1); }
-  35%, 95% { opacity: 0; transform: scale(1.035); }
-  100% { opacity: 1; transform: scale(1.025); }
-}
+@keyframes hero-photo-cycle-3 { 0%, 30% { opacity: 1; transform: scale(1); } 35%, 100% { opacity: 0; transform: scale(1.035); } }
+@keyframes hero-photo-cycle-4 { 0%, 22% { opacity: 1; transform: scale(1); } 25%, 100% { opacity: 0; transform: scale(1.035); } }
+@keyframes hero-photo-cycle-5 { 0%, 17% { opacity: 1; transform: scale(1); } 20%, 100% { opacity: 0; transform: scale(1.035); } }
+@keyframes hero-photo-cycle-6 { 0%, 14% { opacity: 1; transform: scale(1); } 16.667%, 100% { opacity: 0; transform: scale(1.035); } }
+@keyframes hero-photo-cycle-7 { 0%, 12% { opacity: 1; transform: scale(1); } 14.286%, 100% { opacity: 0; transform: scale(1.035); } }
+@keyframes hero-photo-cycle-8 { 0%, 10% { opacity: 1; transform: scale(1); } 12.5%, 100% { opacity: 0; transform: scale(1.035); } }
 .mini-card { position: absolute; z-index: 3; width: 238px; padding: 19px 20px; color: var(--ink); background: rgba(255,253,248,.95); border: 1px solid rgba(255,255,255,.5); border-radius: 14px; box-shadow: 0 18px 50px rgba(6,26,22,.28); backdrop-filter: blur(10px); transform: rotate(-3deg); }
 .mini-card-one { top: 85px; right: 7%; }
 .mini-card-two { left: 10%; bottom: 60px; transform: rotate(4deg); }

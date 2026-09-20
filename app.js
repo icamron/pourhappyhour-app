@@ -277,6 +277,7 @@ const elements = {
   refreshSubmissions: document.querySelector('#refresh-submissions'),
   announcementBar: document.querySelector('#announcement-bar'),
   announcementText: document.querySelector('#announcement-text'),
+  heroSlides: document.querySelector('#hero-slides'),
   submitModal: document.querySelector('#submit-modal'),
   submitForm: document.querySelector('#submit-form'),
   submitSuccess: document.querySelector('#submit-success'),
@@ -292,6 +293,87 @@ const elements = {
 let selectedAttachment = null;
 const allowedAttachmentTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
 const maxAttachmentSize = 10 * 1024 * 1024;
+const originalHeroPhotos = [...elements.heroSlides.querySelectorAll('[data-hero-original]')].map(image => image.src);
+const featuredHeroVenueNames = [
+  'Aroma Gastro Bar',
+  'Bulla',
+  'AVA MediterrAegean',
+  'The Osprey',
+  'The Ravenous Pig',
+  'Prato',
+  'Seito Sushi Baldwin Park',
+  'Permanent Vacation',
+  'The Courtesy',
+  'Lamp & Shade Craft Kitchen & Cocktails',
+  'Firebirds Wood Fired Grill',
+  'Thrive Cocktail Lounge & Eatery'
+];
+
+function validHeroPhoto(value) {
+  if (!value || value === placeholderVenueImage || /\.pdf(?:$|[?#])/i.test(value)) return false;
+  try { return ['http:', 'https:'].includes(new URL(value, window.location.href).protocol); }
+  catch { return false; }
+}
+
+function heroPhotoQualityScore(venue) {
+  const priorityIndex = featuredHeroVenueNames.findIndex(name => name.toLowerCase() === venue.name.toLowerCase());
+  let score = priorityIndex >= 0 ? 1000 - priorityIndex * 20 : 0;
+  try {
+    const url = new URL(venue.image, window.location.href);
+    const width = Number(url.searchParams.get('w') || url.searchParams.get('width') || 0);
+    const quality = Number(url.searchParams.get('q') || url.searchParams.get('quality') || 0);
+    if (width >= 1600) score += 60;
+    else if (width >= 1200) score += 45;
+    else if (width >= 900) score += 30;
+    if (quality >= 80) score += 15;
+    if (/\.(?:avif|webp|jpe?g|png)(?:$|[?#])/i.test(url.href)) score += 10;
+    if (url.protocol === 'https:') score += 5;
+  } catch {}
+  return score;
+}
+
+function refreshHeroCarousel(sourceVenues = venueData) {
+  const usedUrls = new Set(originalHeroPhotos);
+  const venuePhotos = sourceVenues
+    .filter(venue => venue.published !== false && validHeroPhoto(venue.image) && !usedUrls.has(venue.image))
+    .sort((a, b) => heroPhotoQualityScore(b) - heroPhotoQualityScore(a) || a.name.localeCompare(b.name))
+    .filter(venue => {
+      if (usedUrls.has(venue.image)) return false;
+      usedUrls.add(venue.image);
+      return true;
+    })
+    .slice(0, 5)
+    .map(venue => ({ url: venue.image, venue: venue.name }));
+  const photos = [
+    ...originalHeroPhotos.map(url => ({ url, venue: '' })),
+    ...venuePhotos
+  ];
+  const slides = photos.map((photo, index) => {
+    const image = document.createElement('img');
+    image.className = 'hero-slide';
+    image.src = photo.url;
+    image.alt = '';
+    image.loading = index === 0 ? 'eager' : 'lazy';
+    image.decoding = 'async';
+    image.style.setProperty('--hero-slide-delay', `${index * 6}s`);
+    if (index === 0) image.fetchPriority = 'high';
+    if (photo.venue) image.dataset.heroVenue = photo.venue;
+    else image.dataset.heroOriginal = '';
+    if (photo.venue) {
+      image.addEventListener('error', () => {
+        image.remove();
+        const remainingSlides = [...elements.heroSlides.querySelectorAll('.hero-slide')];
+        remainingSlides.forEach((slide, slideIndex) => slide.style.setProperty('--hero-slide-delay', `${slideIndex * 6}s`));
+        elements.heroSlides.dataset.count = String(remainingSlides.length);
+        elements.heroSlides.style.setProperty('--hero-cycle-duration', `${remainingSlides.length * 6}s`);
+      }, { once: true });
+    }
+    return image;
+  });
+  elements.heroSlides.replaceChildren(...slides);
+  elements.heroSlides.dataset.count = String(slides.length);
+  elements.heroSlides.style.setProperty('--hero-cycle-duration', `${slides.length * 6}s`);
+}
 
 function isOwner() {
   return state.role === 'owner';
@@ -1311,6 +1393,7 @@ elements.confirmDeleteListing.addEventListener('click', async () => {
     refreshListingSelect();
     renderNeighborhoods();
     render();
+    refreshHeroCarousel();
     renderDashboard();
     elements.deleteListingModal.close();
     elements.listingSaveState.classList.add('saved');
@@ -1441,6 +1524,7 @@ elements.listingEditor.addEventListener('submit', async event => {
     refreshListingSelect(savedVenue.id);
     renderNeighborhoods();
     render();
+    refreshHeroCarousel();
     if (submissionId) {
       try {
         const updatedSubmission = await db.updateSubmissionStatus(
@@ -1566,7 +1650,10 @@ async function loadDatabase() {
       db.getVenueScores()
     ]);
     const scoreById = Object.fromEntries(scoreRows.map(row => [row.venue_id, row.score]));
-    if (rows.length) venueData.splice(0, venueData.length, ...rows.map(row => mapDatabaseVenue(row, scoreById)));
+    if (rows.length) {
+      venueData.splice(0, venueData.length, ...rows.map(row => mapDatabaseVenue(row, scoreById)));
+      refreshHeroCarousel();
+    }
     if (contentRow) siteContent = mapDatabaseContent(contentRow);
     applySiteContent();
     refreshListingSelect();

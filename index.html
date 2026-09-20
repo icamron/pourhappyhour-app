@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#153c35" />
     <meta name="description" content="A curated guide to happy hour around Orlando." />
-    <title>PourHappy — Orlando Happy Hour Guide</title>
+    <title>Sip City — Orlando Happy Hour Guide</title>
     <script>
       (() => {
         const saved = localStorage.getItem('sip-city-theme');
@@ -22,7 +22,7 @@
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Sip City home">
         <span class="brand-mark" aria-hidden="true">S</span>
-        <span><strong>Pour Happy</strong><small>Orlando, FL</small></span>
+        <span><strong>Sip City</strong><small>Orlando, FL</small></span>
       </a>
       <nav aria-label="Primary navigation">
         <a href="#listings">Explore</a>
@@ -71,10 +71,10 @@
         </div>
 
         <div class="hero-art" aria-label="Featured happy-hour photos">
-          <div class="hero-slides" aria-hidden="true">
-            <img class="hero-slide hero-slide-one" src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" fetchpriority="high" />
-            <img class="hero-slide hero-slide-two" src="https://images.firebirdsrestaurants.com/production/general/Steak-Tacos-FIREBAR-Hero.jpg?auto=format%2Cavif&amp;dm=1711397803&amp;fit=crop&amp;h=932&amp;q=80&amp;s=e745b176f18b1c56f52273302ac1373f&amp;w=1660" alt="" loading="lazy" />
-            <img class="hero-slide hero-slide-three" src="https://images.unsplash.com/photo-1546171753-97d7676e4602?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" loading="lazy" />
+          <div class="hero-slides" id="hero-slides" data-count="3" style="--hero-cycle-duration:18s" aria-hidden="true">
+            <img class="hero-slide" style="--hero-slide-delay:0s" src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" fetchpriority="high" data-hero-original />
+            <img class="hero-slide" style="--hero-slide-delay:6s" src="https://images.firebirdsrestaurants.com/production/general/Steak-Tacos-FIREBAR-Hero.jpg?auto=format%2Cavif&amp;dm=1711397803&amp;fit=crop&amp;h=932&amp;q=80&amp;s=e745b176f18b1c56f52273302ac1373f&amp;w=1660" alt="" loading="lazy" data-hero-original />
+            <img class="hero-slide" style="--hero-slide-delay:12s" src="https://images.unsplash.com/photo-1546171753-97d7676e4602?auto=format&amp;fit=crop&amp;w=1600&amp;q=90" alt="" loading="lazy" data-hero-original />
           </div>
           <div class="hero-photo-shade" aria-hidden="true"></div>
           <div class="mini-card mini-card-one">
