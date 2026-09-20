@@ -311,8 +311,14 @@
           </form>
         </section>
         <section class="dashboard-panel owner-editor" id="listings-panel" data-owner-panel="listings" hidden>
-          <div class="editor-heading"><div><span class="kicker">Quick edit</span><h3>Happy-hour listings</h3></div><button class="button button-ghost" id="new-listing" type="button">＋ New listing</button></div>
-          <p class="save-state" id="listing-save-state">Choose a listing</p>
+          <div class="editor-heading">
+            <div><span class="kicker">Quick edit</span><h3>Happy-hour listings</h3></div>
+            <div class="editor-heading-actions">
+              <button class="button button-danger-soft" id="delete-listing" type="button">Delete listing</button>
+              <button class="button button-ghost" id="new-listing" type="button">＋ New listing</button>
+            </div>
+          </div>
+          <p class="save-state" id="listing-save-state" role="status" aria-live="polite">Choose a listing</p>
           <form id="listing-editor">
             <label><span>Listing to edit</span><select id="listing-select" name="listingId"></select></label>
             <div class="field-grid"><label><span>Venue name</span><input name="name" required maxlength="60" /></label><label><span>Neighborhood</span><input name="neighborhood" required maxlength="40" /></label></div>
@@ -343,6 +349,20 @@
           </form>
         </section>
         <p class="prototype-note">Accounts, private lists, votes, submissions, uploads, and owner edits are securely saved in Supabase.</p>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="delete-listing-modal" aria-labelledby="delete-listing-title">
+      <div class="modal-card delete-listing-card">
+        <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+        <div class="delete-listing-icon" aria-hidden="true">!</div>
+        <span class="kicker">Permanent action</span>
+        <h2 id="delete-listing-title">Delete <span id="delete-listing-name">this listing</span>?</h2>
+        <p>This removes the listing from the directory. Any votes and saved favorites tied to it will also be removed. This cannot be undone.</p>
+        <div class="delete-listing-actions">
+          <button class="button button-ghost" type="button" data-close-modal>Cancel</button>
+          <button class="button button-danger" id="confirm-delete-listing" type="button">Delete listing</button>
+        </div>
       </div>
     </dialog>
 

@@ -126,6 +126,10 @@ window.SipCityDb = {
     return unwrap(await query.select('*').single());
   },
 
+  async deleteVenue(venueId) {
+    return unwrap(await client.from('venues').delete().eq('id', venueId).select('id').single());
+  },
+
   async uploadSubmissionFile(userId, file) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
     const path = `${userId}/${crypto.randomUUID()}/${safeName}`;

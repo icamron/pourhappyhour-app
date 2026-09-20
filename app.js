@@ -209,7 +209,8 @@ const state = {
   submissions: [],
   submissionsLoaded: false,
   submissionsLoading: false,
-  pendingSubmissionId: null
+  pendingSubmissionId: null,
+  pendingDeleteVenueId: null
 };
 
 function setTheme(theme) {
@@ -264,6 +265,10 @@ const elements = {
   listingEditor: document.querySelector('#listing-editor'),
   listingSelect: document.querySelector('#listing-select'),
   newListing: document.querySelector('#new-listing'),
+  deleteListing: document.querySelector('#delete-listing'),
+  deleteListingModal: document.querySelector('#delete-listing-modal'),
+  deleteListingName: document.querySelector('#delete-listing-name'),
+  confirmDeleteListing: document.querySelector('#confirm-delete-listing'),
   listingSaveState: document.querySelector('#listing-save-state'),
   listingSubmit: document.querySelector('#save-listing'),
   submissionCount: document.querySelector('#submission-count'),
@@ -343,6 +348,7 @@ function fillListingEditor(id = elements.listingSelect.value || venueData[0].id)
   elements.listingSubmit.disabled = false;
   elements.listingSubmit.classList.remove('is-saved');
   elements.listingSubmit.textContent = 'Save listing';
+  elements.deleteListing.disabled = isNew;
   elements.listingSaveState.textContent = isNew ? 'Complete the fields to add a venue' : `Editing ${venue.name}`;
 }
 
@@ -1272,6 +1278,50 @@ elements.listingSelect.addEventListener('change', event => {
 elements.newListing.addEventListener('click', () => {
   state.pendingSubmissionId = null;
   fillListingEditor('__new');
+});
+elements.deleteListing.addEventListener('click', () => {
+  if (!isOwner()) return;
+  const venue = venueData.find(item => item.id === elements.listingSelect.value);
+  if (!venue) return;
+  state.pendingDeleteVenueId = venue.id;
+  elements.deleteListingName.textContent = venue.name;
+  elements.confirmDeleteListing.disabled = false;
+  elements.confirmDeleteListing.textContent = 'Delete listing';
+  elements.deleteListingModal.showModal();
+});
+
+elements.confirmDeleteListing.addEventListener('click', async () => {
+  if (!isOwner()) return;
+  const venueId = state.pendingDeleteVenueId;
+  const venueIndex = venueData.findIndex(item => item.id === venueId);
+  if (venueIndex < 0) {
+    elements.deleteListingModal.close();
+    return;
+  }
+  const venueName = venueData[venueIndex].name;
+  elements.confirmDeleteListing.disabled = true;
+  elements.confirmDeleteListing.textContent = 'Deleting…';
+  try {
+    await db.deleteVenue(venueId);
+    venueData.splice(venueIndex, 1);
+    delete state.votes[venueId];
+    state.favorites = state.favorites.filter(id => id !== venueId);
+    state.pendingDeleteVenueId = null;
+    state.pendingSubmissionId = null;
+    refreshListingSelect();
+    renderNeighborhoods();
+    render();
+    renderDashboard();
+    elements.deleteListingModal.close();
+    elements.listingSaveState.classList.add('saved');
+    elements.listingSaveState.textContent = `✓ ${venueName} was deleted`;
+    showToast(`${venueName} deleted`);
+  } catch (error) {
+    console.error(error);
+    elements.confirmDeleteListing.disabled = false;
+    elements.confirmDeleteListing.textContent = 'Delete listing';
+    showToast('The listing could not be deleted. Please try again.');
+  }
 });
 
 elements.listingEditor.addEventListener('click', event => {

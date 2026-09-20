@@ -65,6 +65,11 @@ html[data-theme="dark"] .theme-toggle .moon-icon { opacity: 1; transform: rotate
 .button-dark:hover { background: var(--ink-2); box-shadow: 0 10px 25px rgba(21,60,53,.24); }
 .button-citrus { color: var(--ink-2); background: var(--citrus); }
 .button-ghost { background: #ebe7dd; }
+.button-danger-soft { color: #9d3e28; border: 1px solid #e2b1a4; background: #fff1ec; box-shadow: none; }
+.button-danger-soft:hover { color: white; background: #b84d32; }
+.button-danger { color: white; background: #b84d32; box-shadow: 0 8px 20px rgba(157,62,40,.2); }
+.button-danger:hover { background: #92351f; box-shadow: 0 10px 25px rgba(157,62,40,.26); }
+.button:disabled { cursor: not-allowed; opacity: .56; transform: none; }
 .text-button { border: 0; background: none; padding: 9px 3px; color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 
 .hero { min-height: 650px; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(420px, .96fr); padding-left: clamp(22px, 7vw, 110px); background: var(--cream); overflow: hidden; }
@@ -329,6 +334,8 @@ form textarea { resize: vertical; }
 .owner-editor { padding: 3px 0 0; }
 .editor-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 8px; }
 .editor-heading h3 { margin: 5px 0 0; font: 800 22px 'Libre Franklin', sans-serif; letter-spacing: -.035em; }
+.editor-heading-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.editor-heading-actions .button { min-height: 42px; padding-inline: 17px; font-size: 12px; }
 .save-state { color: var(--muted); font-size: 10px; font-weight: 700; }
 .save-state.saved { color: #247054; }
 .save-state.error { color: #a34428; }
@@ -356,6 +363,11 @@ form textarea { resize: vertical; }
 .editor-actions { padding-top: 4px; }
 .editor-actions .button:disabled { cursor: wait; opacity: .78; }
 .editor-actions .button.is-saved { color: white; background: #2f7d62; }
+.delete-listing-card { width: min(500px, 100%); text-align: center; }
+.delete-listing-icon { width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 18px; border-radius: 50%; color: white; background: #b84d32; font: 800 28px 'Libre Franklin', sans-serif; }
+.delete-listing-card h2 { margin: 12px 0 14px; font-size: clamp(29px, 6vw, 40px); line-height: 1.05; }
+.delete-listing-card p { max-width: 400px; margin: 0 auto; color: var(--muted); line-height: 1.65; }
+.delete-listing-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
 .favorite-list { display: grid; gap: 9px; }
 .favorite-row { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 12px; background: #fcfaf5; }
 .favorite-row img { width: 72px; height: 65px; object-fit: cover; border-radius: 8px; }
@@ -418,6 +430,8 @@ html[data-theme="dark"] .account-button.is-owner { border-color: rgba(255,176,0,
 html[data-theme="dark"] .button-dark { color: #0b2a24; background: var(--citrus); box-shadow: 0 8px 25px rgba(255,176,0,.13); }
 html[data-theme="dark"] .button-dark:hover { background: #ffc33f; }
 html[data-theme="dark"] .button-ghost { color: #f4efe5; background: #21463d; }
+html[data-theme="dark"] .button-danger-soft { color: #ffb39f; border-color: #7d4a3d; background: #402820; }
+html[data-theme="dark"] .button-danger-soft:hover { color: white; background: #a8452e; }
 html[data-theme="dark"] .detail-favorite.active { color: #ff976d; background: #452d27; }
 html[data-theme="dark"] .text-button { color: #f4efe5; }
 html[data-theme="dark"] .hero { background: #081f1a; }
@@ -599,6 +613,10 @@ html[data-theme="dark"] .contact-form-status.error { color: #ffae93; }
   .dashboard-tabs { position: sticky; top: -1px; z-index: 2; }
   .dashboard-tabs { grid-template-columns: repeat(2, 1fr); }
   .editor-heading { align-items: flex-start; }
+  #listings-panel .editor-heading { flex-direction: column; }
+  .editor-heading-actions { width: 100%; justify-content: stretch; }
+  .editor-heading-actions .button { flex: 1; padding-inline: 12px; }
+  .delete-listing-actions { grid-template-columns: 1fr; }
   .editor-specials-heading { align-items: flex-start; flex-direction: column; }
   .editor-special-tabs { width: 100%; }
   .save-state { padding-top: 4px; }
