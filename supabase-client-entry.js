@@ -26,6 +26,11 @@ window.SipCityDb = {
     return client.auth.onAuthStateChange((_event, session) => callback(session));
   },
 
+  async signInAnonymously() {
+    const data = unwrap(await client.auth.signInAnonymously());
+    return data.session;
+  },
+
   async sendMagicLink(email, username) {
     return unwrap(await client.auth.signInWithOtp({
       email,

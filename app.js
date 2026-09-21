@@ -227,6 +227,8 @@ const state = {
   neighborhood: 'All',
   day: 'today',
   sort: 'top',
+  voterId: null,
+  voterIsAnonymous: false,
   user: null,
   userId: null,
   userEmail: null,
@@ -759,7 +761,7 @@ function heartIcon() {
 }
 
 function userVotes() {
-  return state.user ? state.votes : {};
+  return state.voterId ? state.votes : {};
 }
 
 function userFavorites() {
@@ -972,12 +974,11 @@ function mapDatabaseContent(row) {
   };
 }
 
-function clearAccountState() {
+function resetMemberState() {
   state.user = null;
   state.userId = null;
   state.userEmail = null;
   state.role = 'member';
-  state.votes = {};
   state.favorites = [];
   state.submissions = [];
   state.submissionsLoaded = false;
@@ -988,6 +989,13 @@ function clearAccountState() {
   elements.submissionQueue.innerHTML = '';
   elements.submissionQueue.hidden = true;
   elements.submissionEmpty.hidden = false;
+}
+
+function clearAccountState() {
+  resetMemberState();
+  state.voterId = null;
+  state.voterIsAnonymous = false;
+  state.votes = {};
   updateAccountUI();
   render();
 }
@@ -1011,12 +1019,25 @@ async function hydrateSession(session, announce = false) {
     return;
   }
   try {
+    if (session.user.is_anonymous === true) {
+      const votes = await db.getVotes(session.user.id);
+      resetMemberState();
+      state.voterId = session.user.id;
+      state.voterIsAnonymous = true;
+      state.votes = Object.fromEntries(votes.map(item => [item.venue_id, item.value]));
+      if (elements.dashboardModal.open) elements.dashboardModal.close();
+      updateAccountUI();
+      render();
+      return;
+    }
     const [profile, votes, favorites] = await Promise.all([
       db.getProfile(session.user.id),
       db.getVotes(session.user.id),
       db.getFavorites(session.user.id)
     ]);
     const isNewSession = state.userId !== session.user.id;
+    state.voterId = session.user.id;
+    state.voterIsAnonymous = false;
     state.userId = session.user.id;
     state.userEmail = session.user.email || '';
     state.user = profile.username;
@@ -1071,29 +1092,54 @@ function openDashboard() {
   elements.dashboardModal.showModal();
 }
 
-async function vote(id, direction) {
-  if (!state.user) {
-    openAccount({ type: 'vote', id, direction });
-    return false;
+let anonymousVotingSessionPromise = null;
+const votingVenueIds = new Set();
+
+async function ensureVotingIdentity() {
+  if (state.voterId) return state.voterId;
+  if (!db?.signInAnonymously) throw new Error('Anonymous voting is unavailable.');
+  if (!anonymousVotingSessionPromise) {
+    anonymousVotingSessionPromise = (async () => {
+      const session = await db.signInAnonymously();
+      if (!session?.user?.id) throw new Error('Anonymous voting session was not created.');
+      await hydrateSession(session);
+      if (!state.voterId) throw new Error('Anonymous voting session could not be loaded.');
+      return state.voterId;
+    })().finally(() => {
+      anonymousVotingSessionPromise = null;
+    });
   }
-  const nextVote = direction === 'up' ? 1 : -1;
-  const votes = userVotes();
-  const previousVote = votes[id] || 0;
-  const savedVote = previousVote === nextVote ? 0 : nextVote;
-  const venue = venueData.find(item => item.id === id);
-  votes[id] = savedVote;
-  if (venue) venue.score += savedVote - previousVote;
-  render();
-  if (elements.dashboardModal.open) renderDashboard();
+  return anonymousVotingSessionPromise;
+}
+
+async function vote(id, direction) {
+  if (votingVenueIds.has(id)) return false;
+  votingVenueIds.add(id);
+  let previousVote = 0;
+  let savedVote = 0;
+  let venue = null;
   try {
-    await db.setVote(state.userId, id, savedVote);
-    showToast(savedVote === 0 ? 'Vote removed' : savedVote === 1 ? 'Upvote counted' : 'Feedback counted');
+    const voterId = await ensureVotingIdentity();
+    const nextVote = direction === 'up' ? 1 : -1;
+    const votes = userVotes();
+    previousVote = votes[id] || 0;
+    savedVote = previousVote === nextVote ? 0 : nextVote;
+    venue = venueData.find(item => item.id === id);
+    votes[id] = savedVote;
+    if (venue) venue.score += savedVote - previousVote;
+    render();
+    if (elements.dashboardModal.open) renderDashboard();
+    await db.setVote(voterId, id, savedVote);
+    showToast(savedVote === 0 ? 'Vote removed' : savedVote === 1 ? 'Upvote counted' : 'Downvote counted');
   } catch (error) {
-    votes[id] = previousVote;
+    if (state.voterId) state.votes[id] = previousVote;
     if (venue) venue.score -= savedVote - previousVote;
     render();
     console.error(error);
-    showToast('Your vote could not be saved.');
+    showToast('Voting is temporarily unavailable. Please try again.');
+    return false;
+  } finally {
+    votingVenueIds.delete(id);
   }
   return true;
 }

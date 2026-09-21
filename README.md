@@ -37,3 +37,7 @@ The supporting reviewed snapshot is in `data/goldenbuzz-areas-2026-09-19.json`. 
 `supabase/import-vesper-daily-specials.sql` adds 19 new venues from Downtown Orlando, Mills, Lake Eola, Winter Park, and Altamonte after excluding seven listings already in Pour Happy. College Park, Maitland, and South Downtown did not return matching venues on the source page during the September 21, 2026 review.
 
 The import uses the same readable schedule format as the rest of the app, including labels such as `Mon - Fri 3PM - 6PM`. Fourteen reviewed interior or venue photos use direct high-resolution image URLs, matching the existing listing workflow. Listings without a confidently matched, clear photo keep the standard placeholder.
+
+## Anonymous voting
+
+Voting can use a hidden Supabase anonymous session, so visitors can upvote or downvote without creating a visible account. Enable **Anonymous Sign-Ins** in Supabase Authentication settings, then run `supabase/enable-anonymous-voting.sql`. The existing `(user_id, venue_id)` primary key keeps one active vote per visitor and venue. Favorites and the personal dashboard remain available only to regular email accounts.
