@@ -104,7 +104,35 @@ const venueData = [
   }
 ];
 
-const placeholderVenueImage = 'assets/venue-placeholder.svg';
+const placeholderVenueImage = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+    <title id="title">Venue photo coming soon</title>
+    <desc id="desc">A dark green abstract background with two citrus drinks.</desc>
+    <defs>
+      <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#0b2c26"/>
+        <stop offset="1" stop-color="#1f5a4f"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="50%" cy="30%" r="65%">
+        <stop offset="0" stop-color="#f3b84b" stop-opacity=".28"/>
+        <stop offset="1" stop-color="#f3b84b" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#background)"/>
+    <rect width="1200" height="800" fill="url(#glow)"/>
+    <g fill="none" stroke="#f4efe5" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity=".92">
+      <path d="M344 234h212l-28 250c-5 48-45 84-93 84h-4c-48 0-88-36-93-84z"/>
+      <path d="M644 234h212l-28 250c-5 48-45 84-93 84h-4c-48 0-88-36-93-84z"/>
+      <path d="M433 568v82m-79 0h158M733 568v82m-79 0h158"/>
+      <path d="M379 314c52 24 91 24 142 0m158 0c52 24 91 24 142 0"/>
+    </g>
+    <g fill="#f3b84b">
+      <circle cx="370" cy="286" r="28"/>
+      <circle cx="670" cy="286" r="28"/>
+    </g>
+    <text x="600" y="735" fill="#f4efe5" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="5" text-anchor="middle">PHOTO COMING SOON</text>
+  </svg>
+`)}`;
 
 const dealCategoryOverrides = {
   'lake-eola-social': ['drinks', 'drinks', 'food'],
