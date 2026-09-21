@@ -262,6 +262,27 @@ footer .text-button { color: white; }
 .detail-special-info .deal-box { border-left-color: var(--sage); }
 .deal-box { padding: 14px 16px; border-left: 3px solid var(--orange); background: #f6f0e5; }
 .deal-box strong { font-size: 14px; }
+.daily-specials-heading > div { display: grid; gap: 4px; }
+.daily-specials-heading > div > span { color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.daily-specials { display: grid; gap: 9px; }
+.daily-day { overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #fbf8f1; }
+.daily-day summary { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 16px; list-style: none; cursor: pointer; }
+.daily-day summary::-webkit-details-marker { display: none; }
+.daily-day summary > span { display: flex; align-items: center; gap: 9px; }
+.daily-day summary b { font: 800 14px 'Libre Franklin', sans-serif; }
+.daily-day summary em { padding: 4px 7px; border-radius: 999px; color: var(--ink-2); background: var(--citrus); font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.daily-day summary small { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.daily-day summary small::after { content: '+'; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--ink); font-size: 15px; }
+.daily-day[open] summary small::after { content: '−'; }
+.daily-day.is-today { border-color: #e3a423; box-shadow: 0 0 0 3px rgba(255,176,0,.12); }
+.daily-day-specials { display: grid; gap: 9px; padding: 0 11px 11px; }
+.daily-special-card { position: relative; overflow: hidden; padding: 15px 16px 16px 19px; border-radius: 10px; background: white; }
+.daily-special-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--orange); }
+.daily-special-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.daily-special-category { color: var(--orange); font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.daily-special-time { padding: 4px 7px; border-radius: 6px; color: var(--ink); background: var(--mint); font-size: 9px; font-weight: 800; }
+.daily-special-card > strong { display: block; font: 800 14px 'Libre Franklin', sans-serif; }
+.daily-special-card > p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .detail-note { margin: 24px 0; padding: 13px 15px; border: 1px solid #ead5b2; border-radius: 9px; color: #76562f; background: #fff7e8; font-size: 12px; line-height: 1.5; }
 .venue-links { display: flex; flex-wrap: wrap; gap: 16px; margin: -6px 0 22px; }
 .venue-links a { color: var(--orange); font-size: 12px; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
@@ -350,6 +371,7 @@ form textarea { resize: vertical; }
 .save-state.error { color: #a34428; }
 .owner-editor form { margin-top: 20px; }
 .editor-specials { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--cream); }
+.editor-specials[hidden] { display: none; }
 .editor-specials-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .editor-specials-heading > span { display: grid; gap: 3px; }
 .editor-specials-heading strong { font-size: 13px; }
@@ -357,6 +379,27 @@ form textarea { resize: vertical; }
 .editor-special-panel[hidden] { display: none; }
 .editor-special-panel textarea { min-height: 126px; }
 .editor-special-details { padding-top: 13px; border-top: 1px solid var(--line); }
+.daily-specials-toggle-row { border-color: #e1ad44; background: #fff9e9; }
+.daily-specials-editor { display: grid; gap: 14px; padding: 16px; border: 1px solid #e1ad44; border-radius: 14px; background: linear-gradient(145deg, #fff9e9, #f7efe1); }
+.daily-specials-editor[hidden] { display: none; }
+.daily-specials-editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.daily-specials-editor-heading > span { display: grid; gap: 3px; }
+.daily-specials-editor-heading strong { font-size: 14px; }
+.daily-specials-editor-heading small { color: var(--muted); font-size: 10px; }
+.add-daily-special { flex: 0 0 auto; min-height: 39px; padding-inline: 14px; font-size: 11px; }
+.daily-specials-list { display: grid; gap: 12px; }
+.daily-special-editor-card { min-width: 0; display: grid; gap: 13px; margin: 0; padding: 16px; border: 1px solid #dcd3c2; border-radius: 12px; background: var(--paper); box-shadow: 0 8px 24px rgba(21,60,53,.06); }
+.daily-special-row-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.daily-special-number { color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.remove-daily-special { padding: 4px 0; border: 0; color: #a34428; background: transparent; font-size: 10px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.daily-special-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.daily-day-choice { display: block; cursor: pointer; }
+.daily-day-choice input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.daily-day-choice span { min-height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--cream); font-size: 9px; font-weight: 800; text-transform: uppercase; transition: .16s ease; }
+.daily-day-choice input:checked + span { color: white; border-color: var(--ink); background: var(--ink); }
+.daily-day-choice input:focus-visible + span { outline: 3px solid var(--citrus); outline-offset: 2px; }
+.daily-special-time-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; }
+.owner-editor form input:disabled, .owner-editor form select:disabled { cursor: not-allowed; opacity: .64; }
 .editor-toggle-row { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--cream); }
 .switch-label { display: flex; grid-template-columns: none; align-items: center; justify-content: space-between; gap: 20px; cursor: pointer; }
 .switch-label > span:first-child { display: grid; gap: 3px; }
@@ -486,6 +529,13 @@ html[data-theme="dark"] .special-tabs { background: #173a32; }
 html[data-theme="dark"] .special-tab { color: #9eb3aa; }
 html[data-theme="dark"] .special-tab:hover { color: #f4efe5; }
 html[data-theme="dark"] .special-tab.active { color: #0b2a24; background: var(--citrus); }
+html[data-theme="dark"] .daily-day { border-color: #36574f; background: #12352e; }
+html[data-theme="dark"] .daily-day.is-today { border-color: #b98725; box-shadow: 0 0 0 3px rgba(255,176,0,.12); }
+html[data-theme="dark"] .daily-day summary small { color: #9eb3aa; }
+html[data-theme="dark"] .daily-day summary small::after { color: #0b2a24; background: var(--citrus); }
+html[data-theme="dark"] .daily-special-card { background: #173a32; }
+html[data-theme="dark"] .daily-special-time { color: #f4efe5; background: #245247; }
+html[data-theme="dark"] .daily-special-card > p { color: #b9c8c1; }
 html[data-theme="dark"] .detail-note { color: #f1d49c; border-color: #735f36; background: #3d3521; }
 html[data-theme="dark"] form input,
 html[data-theme="dark"] form select,
@@ -522,6 +572,12 @@ html[data-theme="dark"] .dashboard-tab.active { color: #f4efe5; background: #214
 html[data-theme="dark"] .editor-toggle-row { border-color: #36574f; background: #153a32; }
 html[data-theme="dark"] .editor-specials { border-color: #36574f; background: #12352e; }
 html[data-theme="dark"] .editor-special-details { border-color: #36574f; }
+html[data-theme="dark"] .daily-specials-toggle-row { border-color: #75612f; background: #352f20; }
+html[data-theme="dark"] .daily-specials-editor { border-color: #75612f; background: linear-gradient(145deg, #352f20, #17342d); }
+html[data-theme="dark"] .daily-special-editor-card { border-color: #36574f; background: #0f3029; box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+html[data-theme="dark"] .daily-day-choice span { color: #9eb3aa; border-color: #36574f; background: #153a32; }
+html[data-theme="dark"] .daily-day-choice input:checked + span { color: #0b2a24; border-color: var(--citrus); background: var(--citrus); }
+html[data-theme="dark"] .remove-daily-special { color: #ffae93; }
 html[data-theme="dark"] .save-state.saved { color: #82d2b4; }
 html[data-theme="dark"] .save-state.error { color: #ffae93; }
 html[data-theme="dark"] .contact-main { background: #081f1a; }
@@ -634,6 +690,12 @@ html[data-theme="dark"] .contact-form-status.error { color: #ffae93; }
   .delete-listing-actions { grid-template-columns: 1fr; }
   .editor-specials-heading { align-items: flex-start; flex-direction: column; }
   .editor-special-tabs { width: 100%; }
+  .daily-specials-editor-heading { align-items: flex-start; flex-direction: column; }
+  .add-daily-special { width: 100%; }
+  .daily-special-days { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .daily-special-time-grid { grid-template-columns: 1fr 1fr; }
+  .daily-special-time-grid label:last-child { grid-column: 1 / -1; }
+  .daily-special-card-top { align-items: flex-start; flex-direction: column; gap: 6px; }
   .save-state { padding-top: 4px; }
   .submission-card-header { align-items: flex-start; }
   .submission-actions { justify-content: stretch; }

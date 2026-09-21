@@ -6,6 +6,7 @@ A mobile-friendly Orlando happy-hour directory backed by Supabase.
 
 - Search, day, neighborhood, and sort filters
 - Venue detail modals with separate drink and food specials
+- Optional day-specific specials with a highlighted Today view
 - Supabase accounts, private favorites, and voting
 - Owner dashboard, quick editing, and a moderated submission queue
 - Responsive mobile layout and accessible dialog interactions
@@ -25,6 +26,8 @@ Serve this folder with any static server, such as `python3 -m http.server 4173`.
 ## Supabase
 
 Run `supabase/setup.sql` once in Supabase Dashboard > SQL Editor before using accounts, favorites, votes, submissions, or owner editing.
+
+For an existing Pour Happy database, run `supabase/add-daily-specials.sql` once. It adds the optional `daily_specials` field and converts Lamp & Shade into the first weekday-special example. Listings without daily specials continue using the simpler Drinks and Food editor.
 
 ### Reviewed four-area venue import
 

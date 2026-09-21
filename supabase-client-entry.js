@@ -123,6 +123,7 @@ window.SipCityDb = {
       vibe: venue.vibe,
       parking: venue.parking,
       schedule: venue.schedule || [],
+      daily_specials: venue.dailySpecials || [],
       published: venue.published !== false
     };
     const query = isNew

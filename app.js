@@ -100,6 +100,15 @@ const venueData = [
     image: 'https://throwsomeshadeorl.com/wp-content/uploads/2024/07/hhweb4-min.jpg',
     days: ['sunday','monday','tuesday','wednesday','thursday','friday'], start: 16, time: 'Weekly specials · Sun–Fri', price: '$$$', score: 0,
     deals: ['Monday Industry Night: 20% off for hospitality, health care, and first responders · 4 PM–close', 'Shuck It + Tomahawk Tuesday: $2 oysters, discounted bubbles and white wine, and a $90 tomahawk · 4 PM–close', 'Midweek Martinis & Margs: $10 martinis and margaritas Wednesday · 4 PM–close', 'Thriving Thursday: happy hour all night · 4 PM–close', 'Shady Nights: $8 classic cocktails Sunday–Wednesday · 9 PM–close', 'Happy Hour: $10 classic cocktails and select wine Monday–Friday · until 6 PM'],
+    dailySpecials: [
+      { title: 'Monday Industry Night', days: ['monday'], start: 16, end: 24, timeLabel: '4PM - close', category: 'both', text: '20% off for hospitality workers, health care workers, and first responders' },
+      { title: 'Shuck It Tuesday', days: ['tuesday'], start: 16, end: 24, timeLabel: '4PM - close', category: 'both', text: '$2 oysters and discounted bubbles & white wine' },
+      { title: 'Tomahawk Tuesday', days: ['tuesday'], start: 16, end: 24, timeLabel: '4PM - close', category: 'food', text: '$90 tomahawk steak' },
+      { title: 'Midweek Martinis & Margs', days: ['wednesday'], start: 16, end: 24, timeLabel: '4PM - close', category: 'drinks', text: '$10 martinis & margaritas' },
+      { title: 'Thriving Thursday', days: ['thursday'], start: 16, end: 24, timeLabel: '4PM - close', category: 'both', text: 'Happy hour all night' },
+      { title: 'Shady Nights', days: ['sunday','monday','tuesday','wednesday'], start: 21, end: 24, timeLabel: '9PM - close', category: 'drinks', text: '$8 classic cocktails' },
+      { title: 'Happy Hour', days: ['monday','tuesday','wednesday','thursday','friday'], start: 16, end: 18, timeLabel: '4PM - 6PM', category: 'drinks', text: '$10 classic cocktails and select wine' }
+    ],
     tags: ['Craft cocktails','Oysters','Late night'], vibe: 'Playful, polished craft kitchen and cocktail bar', parking: 'Confirm parking details with the venue'
   }
 ];
@@ -154,6 +163,12 @@ const dealCategoryOverrides = {
   'lamp-and-shade': ['both', 'both', 'drinks', 'info', 'drinks', 'drinks']
 };
 
+const weekdayOrder = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+const weekdayLabels = {
+  sunday: 'Sunday', monday: 'Monday', tuesday: 'Tuesday', wednesday: 'Wednesday',
+  thursday: 'Thursday', friday: 'Friday', saturday: 'Saturday'
+};
+
 function inferDealCategory(deal) {
   const text = String(deal || '').toLowerCase();
   const hasDrinks = /beer|bourbon|bubbles|cocktail|draft|drink|gin|highball|lager|liquor|margarita|martini|mimosa|mojito|pour|prosecco|rum|sake|sangria|spirit|spritz|tequila|vodka|well|whiskey|wine|zero-proof/.test(text);
@@ -194,16 +209,34 @@ function normalizeVenueDealRecords(venueId, rawDeals = []) {
   return { deals, dealCategories };
 }
 
-const customVenueSchedules = {
-  'lamp-and-shade': [
-    { days: ['monday','tuesday','wednesday','thursday'], start: 16, end: 23 },
-    { days: ['friday'], start: 16, end: 18 },
-    { days: ['sunday'], start: 21, end: 22 }
-  ]
-};
+function normalizeDailySpecials(rawSpecials = []) {
+  if (!Array.isArray(rawSpecials)) return [];
+  return rawSpecials.map(special => {
+    const days = Array.isArray(special?.days)
+      ? weekdayOrder.filter(day => special.days.map(value => String(value).toLowerCase()).includes(day))
+      : [];
+    const start = Number(special?.start);
+    const end = Number(special?.end);
+    const normalizedStart = Number.isFinite(start) ? start : 16;
+    const normalizedEnd = Number.isFinite(end) ? end : 18;
+    const category = ['drinks', 'food', 'both', 'info'].includes(special?.category) ? special.category : 'info';
+    return {
+      title: String(special?.title || '').trim(),
+      days,
+      start: normalizedStart,
+      end: normalizedEnd,
+      timeLabel: String(special?.timeLabel || '').trim() || `${compactTimeLabel(normalizedStart)} - ${compactTimeLabel(normalizedEnd)}`,
+      category,
+      text: String(special?.text || '').trim()
+    };
+  }).filter(special => special.title && special.text && special.days.length);
+}
+
+const customVenueSchedules = {};
 venueData.forEach(venue => {
   venue.schedule = customVenueSchedules[venue.id] || [];
   venue.dealCategories = dealCategoriesForVenue(venue);
+  venue.dailySpecials = normalizeDailySpecials(venue.dailySpecials);
 });
 
 const db = window.SipCityDb;
@@ -301,6 +334,11 @@ const elements = {
   confirmDeleteListing: document.querySelector('#confirm-delete-listing'),
   listingSaveState: document.querySelector('#listing-save-state'),
   listingSubmit: document.querySelector('#save-listing'),
+  dailySpecialsToggle: document.querySelector('#daily-specials-enabled'),
+  dailySpecialsEditor: document.querySelector('#daily-specials-editor'),
+  dailySpecialsList: document.querySelector('#daily-specials-list'),
+  addDailySpecial: document.querySelector('#add-daily-special'),
+  standardSpecialsEditor: document.querySelector('#standard-specials-editor'),
   submissionCount: document.querySelector('#submission-count'),
   submissionQueue: document.querySelector('#submission-queue'),
   submissionEmpty: document.querySelector('#submission-empty'),
@@ -453,13 +491,97 @@ function fillHomepageEditor() {
   });
 }
 
+let dailySpecialEditorIndex = 0;
+
+function timeChoiceLabel(hour) {
+  if (hour === 24) return '12:00 AM';
+  const wholeHour = Math.floor(hour);
+  const minutes = hour % 1 ? '30' : '00';
+  const period = wholeHour >= 12 ? 'PM' : 'AM';
+  const displayHour = wholeHour % 12 || 12;
+  return `${displayHour}:${minutes} ${period}`;
+}
+
+function compactTimeLabel(hour) {
+  if (hour === 24) return '12AM';
+  const wholeHour = Math.floor(hour);
+  const minutes = hour % 1 ? ':30' : '';
+  return `${wholeHour % 12 || 12}${minutes}${wholeHour >= 12 ? 'PM' : 'AM'}`;
+}
+
+function dailyTimeOptions(selected, midnightValue = null) {
+  const choices = [];
+  for (let hour = 9; hour < 24; hour += .5) choices.push(hour);
+  if (midnightValue !== null) choices.push(midnightValue);
+  return choices.map(hour => `<option value="${hour}"${Number(selected) === hour ? ' selected' : ''}>${timeChoiceLabel(hour)}</option>`).join('');
+}
+
+function dailySpecialEditorMarkup(special = {}) {
+  const normalized = {
+    title: special.title || '', days: special.days || [], start: Number(special.start ?? 16),
+    end: Number(special.end ?? 18), timeLabel: special.timeLabel || '', category: special.category || 'drinks', text: special.text || ''
+  };
+  const cardId = `daily-special-${++dailySpecialEditorIndex}`;
+  const dayChoices = weekdayOrder.map(day => `
+    <label class="daily-day-choice">
+      <input type="checkbox" value="${day}"${normalized.days.includes(day) ? ' checked' : ''} />
+      <span>${weekdayLabels[day].slice(0, 3)}</span>
+    </label>`).join('');
+  return `<fieldset class="daily-special-editor-card" data-daily-special-card>
+      <legend class="sr-only">Weekday special</legend>
+      <div class="daily-special-row-header">
+        <span class="daily-special-number">Daily special</span>
+        <button class="remove-daily-special" type="button" data-remove-daily-special aria-label="Remove this daily special">Remove</button>
+      </div>
+      <label><span>Special name</span><input name="${cardId}-title" data-daily-title maxlength="70" value="${escapeHtml(normalized.title)}" placeholder="Shuck It Tuesday" /></label>
+      <div class="daily-special-days" role="group" aria-label="Days for ${escapeHtml(normalized.title || 'this special')}">${dayChoices}</div>
+      <div class="daily-special-time-grid">
+        <label><span>Starts</span><select data-daily-start>${dailyTimeOptions(normalized.start, 0)}</select></label>
+        <label><span>Ends</span><select data-daily-end>${dailyTimeOptions(normalized.end, 24)}</select></label>
+        <label><span>Type</span><select data-daily-category>
+          <option value="drinks"${normalized.category === 'drinks' ? ' selected' : ''}>Drinks</option>
+          <option value="food"${normalized.category === 'food' ? ' selected' : ''}>Food</option>
+          <option value="both"${normalized.category === 'both' ? ' selected' : ''}>Drinks + food</option>
+          <option value="info"${normalized.category === 'info' ? ' selected' : ''}>Details</option>
+        </select></label>
+      </div>
+      <label><span>Time shown <small>Optional, for example 4PM - close</small></span><input data-daily-time-label maxlength="35" value="${escapeHtml(normalized.timeLabel)}" placeholder="${compactTimeLabel(normalized.start)} - ${compactTimeLabel(normalized.end)}" /></label>
+      <label><span>What is on special</span><textarea data-daily-text rows="3" maxlength="400" placeholder="$2 oysters and discounted bubbles">${escapeHtml(normalized.text)}</textarea></label>
+    </fieldset>`;
+}
+
+function renderListingDailySpecials(specials = []) {
+  elements.dailySpecialsList.innerHTML = specials.map(dailySpecialEditorMarkup).join('');
+}
+
+function syncDailySummaryFields() {
+  if (!elements.dailySpecialsToggle.checked) return;
+  const cards = [...elements.dailySpecialsList.querySelectorAll('[data-daily-special-card]')];
+  const selectedDays = weekdayOrder.filter(day => cards.some(card => card.querySelector(`.daily-day-choice input[value="${day}"]`)?.checked));
+  const starts = cards.map(card => Number(card.querySelector('[data-daily-start]')?.value)).filter(Number.isFinite);
+  if (selectedDays.length) elements.listingEditor.elements.namedItem('days').value = selectedDays.join(', ');
+  if (starts.length) elements.listingEditor.elements.namedItem('start').value = Math.min(...starts);
+}
+
+function setListingDailyMode(enabled, addFirstCard = false) {
+  elements.dailySpecialsToggle.checked = enabled;
+  elements.dailySpecialsEditor.hidden = !enabled;
+  elements.standardSpecialsEditor.hidden = enabled;
+  elements.listingEditor.elements.namedItem('days').disabled = enabled;
+  elements.listingEditor.elements.namedItem('start').disabled = enabled;
+  if (enabled && addFirstCard && !elements.dailySpecialsList.children.length) {
+    elements.dailySpecialsList.insertAdjacentHTML('beforeend', dailySpecialEditorMarkup());
+  }
+  if (enabled) syncDailySummaryFields();
+}
+
 function fillListingEditor(id = elements.listingSelect.value || venueData[0].id) {
   const isNew = id === '__new';
   const venue = isNew ? {
     id: '__new', name: '', neighborhood: '', address: '', website: '',
     image: '',
     days: ['monday','tuesday','wednesday','thursday','friday'], start: 16,
-    time: '4–7 PM', price: '$$', deals: [], dealCategories: [], tags: [], vibe: '', parking: '', published: true
+    time: '4–7 PM', price: '$$', deals: [], dealCategories: [], dailySpecials: [], tags: [], vibe: '', parking: '', published: true
   } : venueData.find(item => item.id === id) || venueData[0];
   if (isNew && !elements.listingSelect.querySelector('[value="__new"]')) {
     elements.listingSelect.insertAdjacentHTML('afterbegin', '<option value="__new">New listing</option>');
@@ -476,6 +598,9 @@ function fillListingEditor(id = elements.listingSelect.value || venueData[0].id)
   fields.namedItem('price').value = venue.price;
   fields.namedItem('days').value = venue.days.join(', ');
   fillListingDealFields(venue);
+  const dailySpecials = normalizeDailySpecials(venue.dailySpecials);
+  renderListingDailySpecials(dailySpecials);
+  setListingDailyMode(Boolean(dailySpecials.length));
   fields.namedItem('tags').value = venue.tags.join(', ');
   fields.namedItem('vibe').value = venue.vibe;
   fields.namedItem('parking').value = venue.parking;
@@ -732,9 +857,10 @@ function happyHourEnd(venue) {
 
 function activeHappyHourEnd(venue, date = new Date()) {
   const { day, hour } = orlandoClock(date);
-  const weekdays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-  const previousDay = weekdays[(weekdays.indexOf(day) + 6) % 7];
-  const windows = venue.schedule?.length
+  const previousDay = weekdayOrder[(weekdayOrder.indexOf(day) + 6) % 7];
+  const windows = venue.dailySpecials?.length
+    ? venue.dailySpecials
+    : venue.schedule?.length
     ? venue.schedule
     : [{ days: venue.days, start: venue.start, end: happyHourEnd(venue) }];
   for (const window of windows) {
@@ -783,7 +909,10 @@ function selectedVenues() {
     .filter(v => state.neighborhood === 'All' || v.neighborhood === state.neighborhood)
     .filter(v => state.sort === 'now' || state.day === 'all' || v.days.includes(day))
     .filter(v => state.sort !== 'now' || isHappeningNow(v))
-    .filter(v => !query || [v.name, v.neighborhood, v.address, ...v.deals, ...v.tags].join(' ').toLowerCase().includes(query))
+    .filter(v => !query || [
+      v.name, v.neighborhood, v.address, ...v.deals, ...v.tags,
+      ...(v.dailySpecials || []).flatMap(special => [special.title, special.text])
+    ].join(' ').toLowerCase().includes(query))
     .sort((a, b) => {
       if (state.sort === 'az') return a.name.localeCompare(b.name);
       if (state.sort === 'soonest') return a.start - b.start || currentScore(b) - currentScore(a);
@@ -792,14 +921,24 @@ function selectedVenues() {
     });
 }
 
+function dailySpecialsForDay(venue, day) {
+  return (venue.dailySpecials || []).filter(special => special.days.includes(day));
+}
+
 function cardMarkup(venue) {
   const vote = userVotes()[venue.id] || 0;
   const favorite = isFavorite(venue.id);
-  const available = venue.days.includes(activeDay());
+  const displayDay = state.day === 'all' ? dayInOrlando() : activeDay();
+  const available = venue.days.includes(displayDay);
   const happeningNow = isHappeningNow(venue);
-  const scheduleText = venue.schedule?.length
+  const dailySpecials = dailySpecialsForDay(venue, displayDay);
+  const dailyTimes = [...new Set(dailySpecials.map(special => special.timeLabel).filter(Boolean))];
+  const scheduleText = dailySpecials.length
+    ? `${weekdayLabels[displayDay].slice(0, 3)} · ${dailyTimes.join(' + ')}`
+    : venue.schedule?.length
     ? venue.time
     : `${venue.time} · ${venue.days.length === 7 ? 'Daily' : venue.days.map(d => d.slice(0,3)).join(' · ')}`;
+  const cardDeals = dailySpecials.length ? dailySpecials.map(special => special.text) : venue.deals;
   return `
     <article class="venue-card" data-id="${venue.id}">
       <div class="card-image">
@@ -810,7 +949,7 @@ function cardMarkup(venue) {
         <div class="card-location"><span>${venue.neighborhood}</span>${happeningNow ? '<span class="now-badge">● Happening now</span>' : available ? '<span class="today-badge">● Today</span>' : ''}</div>
         <h3>${venue.name}</h3>
         <div class="schedule-line"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${scheduleText}</span></div>
-        <p class="deal-list">${venue.deals.slice(0,2).join(' · ')}</p>
+        <p class="deal-list">${cardDeals.slice(0,2).map(escapeHtml).join(' · ')}</p>
       </button>
       <div class="card-footer">
         <span class="card-tag">${venue.tags.join(' · ')}</span>
@@ -900,6 +1039,7 @@ function mapDatabaseVenue(row, scoreById = {}) {
     score: Number(scoreById[row.id] ?? row.base_score),
     deals: normalizedDeals.deals,
     dealCategories: normalizedDeals.dealCategories,
+    dailySpecials: normalizeDailySpecials(row.daily_specials),
     tags: row.tags || [],
     vibe: row.vibe || '',
     parking: row.parking || '',
@@ -938,7 +1078,65 @@ function dealCardsMarkup(deals, label) {
   return deals.map(deal => `<div class="deal-box"><span>${label}</span><strong>${escapeHtml(deal)}</strong></div>`).join('');
 }
 
+function dailySpecialMatchesTab(special, tab) {
+  return special.category === 'info' || special.category === 'both' || special.category === tab;
+}
+
+function dailySpecialDayMarkup(venue, day, specials, tab, openDay) {
+  const isToday = day === dayInOrlando();
+  const cards = specials.map(special => {
+    const categoryLabel = special.category === 'both'
+      ? 'Drinks + food'
+      : special.category === 'drinks' ? 'Drinks' : special.category === 'food' ? 'Food' : 'Details';
+    return `<article class="daily-special-card">
+        <div class="daily-special-card-top">
+          <span class="daily-special-category">${categoryLabel}</span>
+          <span class="daily-special-time">${escapeHtml(special.timeLabel)}</span>
+        </div>
+        <strong>${escapeHtml(special.title)}</strong>
+        <p>${escapeHtml(special.text)}</p>
+      </article>`;
+  }).join('');
+  return `<details class="daily-day${isToday ? ' is-today' : ''}"${day === openDay ? ' open' : ''}>
+      <summary>
+        <span><b>${weekdayLabels[day]}</b>${isToday ? '<em>Today</em>' : ''}</span>
+        <small>${specials.length} ${specials.length === 1 ? 'special' : 'specials'}</small>
+      </summary>
+      <div class="daily-day-specials" data-daily-day="${day}" data-daily-tab="${tab}">${cards}</div>
+    </details>`;
+}
+
+function dailySpecialsPanelMarkup(venue, tab, active) {
+  const groupedDays = weekdayOrder
+    .map(day => ({ day, specials: venue.dailySpecials.filter(special => special.days.includes(day) && dailySpecialMatchesTab(special, tab)) }))
+    .filter(group => group.specials.length);
+  const today = dayInOrlando();
+  const openDay = groupedDays.some(group => group.day === today) ? today : groupedDays[0]?.day;
+  return `<div class="daily-specials special-panel" id="${venue.id}-${tab}-panel" role="tabpanel" aria-labelledby="${venue.id}-${tab}-tab" data-deal-panel="${tab}"${active ? '' : ' hidden'}>
+      ${groupedDays.map(group => dailySpecialDayMarkup(venue, group.day, group.specials, tab, openDay)).join('')}
+    </div>`;
+}
+
+function dailyVenueSpecialsMarkup(venue) {
+  const hasDrinks = venue.dailySpecials.some(special => ['drinks', 'both'].includes(special.category));
+  const hasFood = venue.dailySpecials.some(special => ['food', 'both'].includes(special.category));
+  const tabs = [];
+  if (hasDrinks) tabs.push('drinks');
+  if (hasFood) tabs.push('food');
+  if (!tabs.length) tabs.push('info');
+  const activeTab = tabs[0];
+  const tabMarkup = tabs[0] === 'info' ? '' : `<div class="special-tabs" role="tablist" aria-label="${escapeHtml(venue.name)} specials">
+    ${tabs.map(tab => `<button class="special-tab${tab === activeTab ? ' active' : ''}" id="${venue.id}-${tab}-tab" type="button" role="tab" aria-selected="${tab === activeTab}" aria-controls="${venue.id}-${tab}-panel" tabindex="${tab === activeTab ? '0' : '-1'}" data-deal-tab="${tab}">${tab === 'drinks' ? 'Drinks' : 'Food'}</button>`).join('')}
+  </div>`;
+  return `<div class="detail-specials-heading daily-specials-heading">
+      <div><span>Different deals, different days</span><h3>What’s on special</h3></div>
+      ${tabMarkup}
+    </div>
+    ${tabs.map(tab => dailySpecialsPanelMarkup(venue, tab, tab === activeTab)).join('')}`;
+}
+
 function venueSpecialsMarkup(venue) {
+  if (venue.dailySpecials?.length) return dailyVenueSpecialsMarkup(venue);
   const groups = categorizedVenueDeals(venue);
   const tabs = [];
   if (groups.drinks.length) tabs.push('drinks');
@@ -1508,7 +1706,26 @@ elements.confirmDeleteListing.addEventListener('click', async () => {
 elements.listingEditor.addEventListener('click', event => {
   const tab = event.target.closest('[data-editor-deal-tab]');
   if (tab) activateListingDealTab(tab.dataset.editorDealTab);
+  const removeDailySpecial = event.target.closest('[data-remove-daily-special]');
+  if (removeDailySpecial) {
+    removeDailySpecial.closest('[data-daily-special-card]')?.remove();
+    if (!elements.dailySpecialsList.children.length) {
+      elements.dailySpecialsList.insertAdjacentHTML('beforeend', dailySpecialEditorMarkup());
+    }
+    syncDailySummaryFields();
+  }
 });
+
+elements.dailySpecialsToggle.addEventListener('change', event => {
+  setListingDailyMode(event.target.checked, true);
+});
+
+elements.addDailySpecial.addEventListener('click', () => {
+  elements.dailySpecialsList.insertAdjacentHTML('beforeend', dailySpecialEditorMarkup());
+  elements.dailySpecialsList.lastElementChild?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
+});
+
+elements.dailySpecialsList.addEventListener('change', syncDailySummaryFields);
 
 elements.listingEditor.addEventListener('keydown', event => {
   const currentTab = event.target.closest('[data-editor-deal-tab]');
@@ -1558,6 +1775,51 @@ function listingDealData(fields) {
   return { deals, dealCategories, drinks, food };
 }
 
+function listingDailySpecialData() {
+  const specials = [];
+  for (const card of elements.dailySpecialsList.querySelectorAll('[data-daily-special-card]')) {
+    const title = card.querySelector('[data-daily-title]').value.trim();
+    const text = card.querySelector('[data-daily-text]').value.trim();
+    const days = weekdayOrder.filter(day => card.querySelector(`.daily-day-choice input[value="${day}"]`)?.checked);
+    const start = Number(card.querySelector('[data-daily-start]').value);
+    const end = Number(card.querySelector('[data-daily-end]').value);
+    const category = card.querySelector('[data-daily-category]').value;
+    const customTimeLabel = card.querySelector('[data-daily-time-label]').value.trim();
+    if (!title || !text || !days.length) {
+      return { error: 'Each daily special needs a name, at least one day, and a description.' };
+    }
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+      return { error: `Choose an end time after the start time for ${title}.` };
+    }
+    specials.push({
+      title, days, start, end,
+      timeLabel: customTimeLabel || `${compactTimeLabel(start)} - ${compactTimeLabel(end)}`,
+      category,
+      text
+    });
+  }
+  if (!specials.length) return { error: 'Add at least one daily special.' };
+  const days = weekdayOrder.filter(day => specials.some(special => special.days.includes(day)));
+  const deals = [];
+  const dealCategories = [];
+  const seen = new Set();
+  specials.forEach(special => {
+    const deal = `${special.title}: ${special.text}`;
+    const key = deal.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    deals.push(deal);
+    dealCategories.push(special.category);
+  });
+  return {
+    specials,
+    days,
+    start: Math.min(...specials.map(special => special.start)),
+    deals,
+    dealCategories
+  };
+}
+
 function slugifyVenueName(name) {
   const base = name.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 55) || 'new-venue';
@@ -1574,15 +1836,25 @@ elements.listingEditor.addEventListener('submit', async event => {
   const isNew = selectedId === '__new';
   const submissionId = isNew ? state.pendingSubmissionId : null;
   const name = fields.namedItem('name').value.trim();
-  const dealData = listingDealData(fields);
-  const days = fields.namedItem('days').value.split(',').map(day => day.trim().toLowerCase()).filter(Boolean);
+  const dailyMode = fields.namedItem('dailySpecialsEnabled').checked;
+  const dailyData = dailyMode ? listingDailySpecialData() : null;
+  if (dailyData?.error) {
+    elements.listingSaveState.classList.add('error');
+    elements.listingSaveState.textContent = dailyData.error;
+    return;
+  }
+  const standardDealData = listingDealData(fields);
+  const dealData = dailyMode ? dailyData : standardDealData;
+  const days = dailyMode
+    ? dailyData.days
+    : fields.namedItem('days').value.split(',').map(day => day.trim().toLowerCase()).filter(Boolean);
   const validDays = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
   if (!days.length || days.some(day => !validDays.includes(day))) {
     elements.listingSaveState.classList.add('error');
     elements.listingSaveState.textContent = 'Use full weekday names separated by commas';
     return;
   }
-  if (!dealData.drinks.length && !dealData.food.length) {
+  if (!dailyMode && !standardDealData.drinks.length && !standardDealData.food.length) {
     elements.listingSaveState.classList.add('error');
     elements.listingSaveState.textContent = 'Add at least one drink or food special';
     activateListingDealTab('drinks');
@@ -1597,17 +1869,18 @@ elements.listingEditor.addEventListener('submit', async event => {
     website: fields.namedItem('website').value.trim(),
     image: fields.namedItem('image').value.trim(),
     days,
-    start: Number(fields.namedItem('start').value),
+    start: dailyMode ? dailyData.start : Number(fields.namedItem('start').value),
     time: fields.namedItem('time').value.trim(),
     price: fields.namedItem('price').value,
     baseScore: existingVenue?.baseScore ?? existingVenue?.score ?? 0,
     score: existingVenue?.score ?? 0,
     deals: dealData.deals,
     dealCategories: dealData.dealCategories,
+    dailySpecials: dailyMode ? dailyData.specials : [],
     tags: fields.namedItem('tags').value.split(',').map(tag => tag.trim()).filter(Boolean),
     vibe: fields.namedItem('vibe').value.trim(),
     parking: fields.namedItem('parking').value.trim(),
-    schedule: existingVenue?.schedule || [],
+    schedule: dailyMode ? [] : (existingVenue?.schedule || []),
     published: fields.namedItem('published').checked
   };
   elements.listingSaveState.classList.remove('saved', 'error');
