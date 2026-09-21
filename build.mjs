@@ -19,5 +19,6 @@ await Promise.all([
   cp('contact.html', 'dist/contact.html'),
   cp('styles.css', 'dist/styles.css'),
   cp('app.js', 'dist/app.js'),
-  cp('contact.js', 'dist/contact.js')
+  cp('contact.js', 'dist/contact.js'),
+  cp('assets', 'dist/assets', { recursive: true })
 ]);
