@@ -17,7 +17,9 @@ await build({
 await Promise.all([
   cp('index.html', 'dist/index.html'),
   cp('contact.html', 'dist/contact.html'),
+  cp('privacy.html', 'dist/privacy.html'),
   cp('styles.css', 'dist/styles.css'),
   cp('app.js', 'dist/app.js'),
-  cp('contact.js', 'dist/contact.js')
+  cp('contact.js', 'dist/contact.js'),
+  cp('privacy.js', 'dist/privacy.js')
 ]);
