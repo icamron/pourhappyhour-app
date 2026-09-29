@@ -11,12 +11,100 @@ const client = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   }
 });
 
+const presenceStorageKey = 'pour-happy-presence-id';
+
+function getPresenceKey() {
+  try {
+    let key = window.localStorage.getItem(presenceStorageKey);
+    if (!key) {
+      key = window.crypto?.randomUUID?.() || `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      window.localStorage.setItem(presenceStorageKey, key);
+    }
+    return key;
+  } catch {
+    return window.crypto?.randomUUID?.() || `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+}
+
 function unwrap(result) {
   if (result.error) throw result.error;
   return result.data;
 }
 
 window.SipCityDb = {
+  watchActiveVisitors(onChange) {
+    const callback = typeof onChange === 'function' ? onChange : () => {};
+    const channel = client.channel('pour-happy-active-visitors', {
+      config: { presence: { key: getPresenceKey() } }
+    });
+    let subscribed = false;
+    let tracked = false;
+    let stopped = false;
+    let hiddenTimer = null;
+
+    const emitCount = () => {
+      if (stopped) return;
+      const activeBrowsers = Object.keys(channel.presenceState()).length;
+      callback(activeBrowsers);
+    };
+
+    const track = async () => {
+      if (!subscribed || tracked || stopped || document.hidden) return;
+      try {
+        const result = await channel.track({
+          online_at: new Date().toISOString(),
+          page: window.location.pathname || '/'
+        });
+        if (result !== 'ok') throw new Error(`Presence track returned ${result}`);
+        tracked = true;
+      } catch (error) {
+        console.error(error);
+        callback(null);
+      }
+    };
+
+    const untrack = async () => {
+      if (!tracked) return;
+      tracked = false;
+      try { await channel.untrack(); }
+      catch (error) { console.error(error); }
+    };
+
+    const handleVisibilityChange = () => {
+      window.clearTimeout(hiddenTimer);
+      hiddenTimer = null;
+      if (document.hidden) {
+        hiddenTimer = window.setTimeout(untrack, 90000);
+      } else {
+        track();
+      }
+    };
+
+    channel
+      .on('presence', { event: 'sync' }, emitCount)
+      .subscribe(async status => {
+        if (status === 'SUBSCRIBED') {
+          subscribed = true;
+          await track();
+          emitCount();
+        } else if (!stopped && ['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) {
+          callback(null);
+        }
+      });
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      if (stopped) return;
+      stopped = true;
+      subscribed = false;
+      window.clearTimeout(hiddenTimer);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (tracked) channel.untrack().catch(() => {});
+      client.removeChannel(channel).catch(() => {});
+    };
+  },
+
   async getSession() {
     const data = unwrap(await client.auth.getSession());
     return data.session;

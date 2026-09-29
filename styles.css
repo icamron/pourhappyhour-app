@@ -144,11 +144,16 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .neighborhoods::-webkit-scrollbar { display: none; }
 .neighborhood-chip { flex: 0 0 auto; height: 33px; padding: 0 14px; border: 1px solid #d5d1c8; border-radius: 999px; color: #5b655f; background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; }
 .neighborhood-chip:hover, .neighborhood-chip.active { border-color: var(--ink); color: white; background: var(--ink); }
-.results-bar { max-width: 1400px; margin: 32px auto 17px; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 13px; }
+.results-bar { max-width: 1400px; margin: 32px auto 17px; display: flex; align-items: center; justify-content: space-between; gap: 14px; color: var(--muted); font-size: 13px; }
 .results-bar p { margin: 0; }
 .results-bar strong { color: var(--ink); }
+.results-statuses { display: flex; align-items: center; gap: 16px; }
 .legend { display: flex; align-items: center; gap: 7px; }
 .legend span { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+.live-presence { min-height: 34px; display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px; border-radius: 999px; color: var(--ink-2); background: var(--citrus); box-shadow: 0 6px 18px rgba(255,176,0,.18); font-size: 11px; font-weight: 700; white-space: nowrap; }
+.live-presence[hidden] { display: none; }
+.live-presence strong { color: inherit; font-size: 12px; }
+.live-presence-dot { width: 7px; height: 7px; margin-right: 2px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px rgba(21,60,53,.13); }
 
 .venue-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .venue-card { min-width: 0; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
@@ -552,6 +557,8 @@ html[data-theme="dark"] .neighborhood-chip { color: #bdcbc5; border-color: #3b5b
 html[data-theme="dark"] .neighborhood-chip:hover,
 html[data-theme="dark"] .neighborhood-chip.active { color: #0b2a24; border-color: var(--citrus); background: var(--citrus); }
 html[data-theme="dark"] .results-bar strong { color: #f4efe5; }
+html[data-theme="dark"] .live-presence,
+html[data-theme="dark"] .live-presence strong { color: #10251f; }
 html[data-theme="dark"] .venue-card { border-color: #2e4d45; background: #102f29; }
 html[data-theme="dark"] .venue-card:hover { border-color: #54776d; box-shadow: 0 20px 60px rgba(0,0,0,.28); }
 html[data-theme="dark"] .card-main { color: #f4efe5; }
@@ -710,8 +717,9 @@ html[data-theme="dark"] .privacy-contact-card { background: #061914; }
   .filter-search { grid-column: 1 / -1; min-width: 0; }
   .select-wrap select { min-width: 0; width: 100%; }
   #clear-filters { grid-column: 1 / -1; justify-self: center; }
-  .results-bar { margin-top: 24px; }
+  .results-bar { flex-wrap: wrap; margin-top: 24px; }
   .results-bar .legend { display: none; }
+  .results-statuses { margin-left: auto; }
   .venue-grid { grid-template-columns: 1fr; }
   .card-image { height: 220px; }
   .community { grid-template-columns: 1fr; padding: 76px 22px; }

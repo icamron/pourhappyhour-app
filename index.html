@@ -67,7 +67,7 @@
             <div><strong id="listing-stat">17</strong><span>Happy Hour Spots</span></div>
             <div><strong id="neighborhood-stat">0</strong><span>neighborhoods</span></div>
             <div><strong>Weekly</strong><span>update rhythm</span></div>
-            <div class="last-updated-stat" id="last-updated"><strong><time datetime="2026-09-28">Sept. 28, 2026</time></strong><span>last updated</span></div>
+            <div class="last-updated-stat" id="last-updated"><strong><time datetime="2026-09-21">Sept. 21, 2026</time></strong><span>last updated</span></div>
           </div>
         </div>
 
@@ -141,9 +141,16 @@
           <div class="neighborhoods" id="neighborhoods" aria-label="Filter by neighborhood"></div>
         </div>
 
-        <div class="results-bar" aria-live="polite">
-          <p><strong id="result-count">12 spots</strong><span id="result-context"> worth leaving work for</span></p>
-          <div class="legend"><span></span> Community score</div>
+        <div class="results-bar">
+          <p aria-live="polite"><strong id="result-count">12 spots</strong><span id="result-context"> worth leaving work for</span></p>
+          <div class="results-statuses">
+            <div class="legend"><span></span> Community score</div>
+            <div class="live-presence" id="live-presence" aria-label="People browsing now" hidden>
+              <span class="live-presence-dot" aria-hidden="true"></span>
+              <strong id="live-presence-count">1</strong>
+              <span id="live-presence-label">browsing now</span>
+            </div>
+          </div>
         </div>
 
         <div class="venue-grid" id="venue-grid"></div>
@@ -382,6 +389,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="supabase-client.js"></script>
+    <script src="presence.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

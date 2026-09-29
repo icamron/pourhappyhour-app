@@ -47,7 +47,7 @@
           <div class="privacy-updated">
             <span aria-hidden="true"></span>
             <strong>Last updated</strong>
-            <time datetime="2026-09-28">September 28, 2026</time>
+            <time datetime="2026-09-29">September 29, 2026</time>
           </div>
         </div>
         <div class="privacy-hero-mark" aria-hidden="true">
@@ -98,6 +98,7 @@
               <ul>
                 <li><strong>Account information:</strong> Your email address, username, account identifier, and sign-in activity when you create or access an account.</li>
                 <li><strong>Votes and favorites:</strong> Your upvotes, downvotes, and privately saved venues. Visitors who vote without an account receive an anonymous identifier so one active vote can be counted per visitor and venue.</li>
+                <li><strong>Live activity:</strong> An anonymous browser identifier and temporary online status are used to calculate the total number of active browser sessions on Pour Happy. The public counter displays only the total, not usernames or personal details.</li>
                 <li><strong>Submissions:</strong> Venue names, happy-hour details, source links, your optional contact email, and any PDF or image you choose to upload for review.</li>
                 <li><strong>Contact messages:</strong> Your name, phone number, email address, and the details you include when contacting us.</li>
                 <li><strong>Technical information:</strong> Our hosting and authentication providers may process information such as your IP address, browser type, device information, requested pages, and timestamps for security and service operation.</li>
@@ -128,7 +129,7 @@
             <span class="privacy-number">05</span>
             <div>
               <h2>Cookies and browser storage</h2>
-              <p>Pour Happy and its service providers may use cookies, local storage, and similar technologies to keep you signed in, remember your light or dark theme, support anonymous voting, protect the service, and maintain basic functionality.</p>
+              <p>Pour Happy and its service providers may use cookies, local storage, and similar technologies to keep you signed in, remember your light or dark theme, support anonymous voting, reduce duplicate browser sessions in the live visitor count, protect the service, and maintain basic functionality.</p>
               <p>You can clear or block browser storage through your browser settings. Doing so may sign you out, reset your preferences, or prevent some features from working correctly.</p>
             </div>
           </section>
@@ -138,7 +139,7 @@
             <div>
               <h2>Data retention</h2>
               <p>We keep information for as long as reasonably needed to provide the service, maintain accurate records, review submissions, prevent fraud or abuse, resolve disputes, and meet legal obligations. Retention periods can vary based on the type of information and why it was collected.</p>
-              <p>Rejected or outdated submissions and their uploaded files may be removed when they are no longer needed for review or recordkeeping.</p>
+              <p>Live presence status is temporary and is removed after the browser disconnects or becomes inactive. Rejected or outdated submissions and their uploaded files may be removed when they are no longer needed for review or recordkeeping.</p>
             </div>
           </section>
 
@@ -147,7 +148,7 @@
             <div>
               <h2>Your choices and rights</h2>
               <p>Depending on where you live, you may have the right to request access to, correction of, or deletion of personal information connected to you. You may also ask questions about how your information is used.</p>
-              <p>To make a request, email <a href="mailto:orlandodesignllc@gmail.com">orlandodesignllc@gmail.com</a>. We may need to verify your identity before completing a request. You can also remove individual favorites from your dashboard and clear browser storage directly from your browser.</p>
+              <p>To make a request, email <a href="mailto:huntsvilledesigns@gmail.com">huntsvilledesigns@gmail.com</a>. We may need to verify your identity before completing a request. You can also remove individual favorites from your dashboard and clear browser storage directly from your browser.</p>
             </div>
           </section>
 
@@ -185,7 +186,7 @@
                 <span class="kicker">Questions or requests</span>
                 <h3>Contact Pour Happy</h3>
                 <p>Email us about this policy or your information.</p>
-                <a class="button button-dark" href="mailto:orlandodesignllc@gmail.com">orlandodesignllc@gmail.com</a>
+                <a class="button button-dark" href="mailto:huntsvilledesigns@gmail.com">huntsvilledesigns@gmail.com</a>
               </div>
             </div>
           </section>
@@ -199,6 +200,8 @@
       <div class="footer-links"><a class="text-button" href="contact.html">Contact</a><a class="text-button" href="privacy.html" aria-current="page">Privacy Policy</a><a class="text-button" href="index.html#listings">Explore happy hours</a></div>
     </footer>
 
+    <script src="supabase-client.js"></script>
+    <script src="presence.js"></script>
     <script src="privacy.js"></script>
   </body>
 </html>

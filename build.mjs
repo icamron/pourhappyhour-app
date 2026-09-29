@@ -20,6 +20,7 @@ await Promise.all([
   cp('privacy.html', 'dist/privacy.html'),
   cp('styles.css', 'dist/styles.css'),
   cp('app.js', 'dist/app.js'),
+  cp('presence.js', 'dist/presence.js'),
   cp('contact.js', 'dist/contact.js'),
   cp('privacy.js', 'dist/privacy.js')
 ]);
