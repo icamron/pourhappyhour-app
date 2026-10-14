@@ -941,10 +941,10 @@ function cardMarkup(venue) {
   const cardDeals = dailySpecials.length ? dailySpecials.map(special => special.text) : venue.deals;
   return `
     <article class="venue-card" data-id="${venue.id}">
-      <div class="card-image">
-        <img src="${venueImage(venue)}" alt="${venue.image ? `Photo representing ${venue.name}` : ''}" loading="lazy" onerror="this.onerror=null;this.src='${placeholderVenueImage}'" />
+      <button class="card-image" type="button" data-view="${venue.id}" aria-label="View details for ${venue.name} from its photo">
+        <img src="${venueImage(venue)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${placeholderVenueImage}'" />
         ${venue.price ? `<div class="image-tags"><span class="price-pill">${venue.price}</span></div>` : ''}
-      </div>
+      </button>
       <button class="card-main" data-view="${venue.id}" aria-label="View details for ${venue.name}">
         <div class="card-location"><span>${venue.neighborhood}</span>${happeningNow ? '<span class="now-badge">● Happening now</span>' : available ? '<span class="today-badge">● Today</span>' : ''}</div>
         <h3>${venue.name}</h3>

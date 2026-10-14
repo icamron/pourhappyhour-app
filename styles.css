@@ -28,7 +28,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 
 .site-header { height: 82px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 clamp(22px, 5vw, 76px); background: var(--cream); border-bottom: 1px solid rgba(21,60,53,.12); position: relative; z-index: 10; }
 .brand { display: inline-flex; align-items: center; gap: 11px; width: max-content; }
-.brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 50% 50% 47% 53%; background: var(--orange); color: #fff6e6; font-family: 'Libre Franklin', sans-serif; font-size: 20px; font-weight: 800; transform: rotate(-6deg); }
+.brand-mark { width: 39px; height: 39px; display: block; flex: 0 0 auto; overflow: hidden; border-radius: 11px; background: var(--ink); box-shadow: 0 6px 18px rgba(12,43,37,.16); transform: rotate(-3deg); }
+.brand-mark img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .brand > span:last-child { display: grid; line-height: 1; }
 .brand strong { font: 800 17px/1 'Libre Franklin', sans-serif; letter-spacing: -.035em; text-transform: uppercase; }
 .brand small { margin-top: 5px; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
@@ -60,7 +61,7 @@ html[data-theme="dark"] .theme-toggle .moon-icon { opacity: 1; transform: rotate
 
 .button { border: 0; border-radius: 999px; min-height: 46px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-weight: 700; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
 .button:hover { transform: translateY(-2px); }
-.button:focus-visible, .text-button:focus-visible, .vote-button:focus-visible, .neighborhood-chip:focus-visible, .modal-close:focus-visible, .card-main:focus-visible, .install-app-link:focus-visible, .install-device-tab:focus-visible, .install-got-it:focus-visible { outline: 3px solid var(--citrus); outline-offset: 3px; }
+.button:focus-visible, .text-button:focus-visible, .vote-button:focus-visible, .neighborhood-chip:focus-visible, .modal-close:focus-visible, .card-main:focus-visible, .card-image:focus-visible, .install-app-link:focus-visible, .install-device-tab:focus-visible, .install-got-it:focus-visible { outline: 3px solid var(--citrus); outline-offset: 3px; }
 .button-dark { color: white; background: var(--ink); box-shadow: 0 8px 20px rgba(21,60,53,.18); }
 .button-dark:hover { background: var(--ink-2); box-shadow: 0 10px 25px rgba(21,60,53,.24); }
 .button-citrus { color: var(--ink-2); background: var(--citrus); }
@@ -158,7 +159,7 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .venue-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .venue-card { min-width: 0; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
 .venue-card:hover { transform: translateY(-5px); border-color: #b4c2bb; box-shadow: var(--shadow); }
-.card-image { height: 200px; position: relative; overflow: hidden; background: var(--ink); }
+.card-image { width: 100%; height: 200px; display: block; position: relative; overflow: hidden; padding: 0; border: 0; background: var(--ink); text-align: left; cursor: pointer; }
 .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
 .venue-card:hover .card-image img { transform: scale(1.035); }
 .card-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 45%, rgba(6,24,20,.58)); }
