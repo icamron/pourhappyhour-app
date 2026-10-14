@@ -14,6 +14,16 @@ await build({
   legalComments: 'none'
 });
 
+await build({
+  entryPoints: ['analytics-entry.js'],
+  outfile: 'dist/analytics.js',
+  bundle: true,
+  minify: true,
+  format: 'iife',
+  target: ['es2020'],
+  legalComments: 'none'
+});
+
 await Promise.all([
   cp('index.html', 'dist/index.html'),
   cp('contact.html', 'dist/contact.html'),
