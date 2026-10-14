@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#153c35" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pour Happy" />
     <meta name="description" content="Contact Pour Happy about an Orlando restaurant, happy hour, partnership, or question." />
     <title>Contact | Pour Happy Orlando</title>
     <script>
@@ -13,6 +15,9 @@
         document.documentElement.dataset.theme = saved || preferred;
       })();
     </script>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="contact-page-body">
@@ -75,12 +80,13 @@
     <footer>
       <a class="brand brand-footer" href="index.html"><span class="brand-mark">P</span><span><strong>Pour Happy</strong><small>Orlando, FL</small></span></a>
       <p>Made for the 407. Confirm current specials with each venue.</p>
-      <div class="footer-links"><a class="text-button" href="privacy.html">Privacy Policy</a><a class="text-button" href="index.html#listings">Explore happy hours</a></div>
+      <div class="footer-links"><button class="install-app-link" type="button" data-open-install><span class="install-app-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M10 5h4M11.5 18.5h1"/></svg></span><span data-install-label>Install app on phone</span></button><a class="text-button" href="privacy.html">Privacy Policy</a><a class="text-button" href="index.html#listings">Explore happy hours</a></div>
     </footer>
 
     <script src="supabase-client.js"></script>
     <script src="presence.js"></script>
     <script src="contact.js"></script>
+    <script src="install-app.js"></script>
     <script src="analytics.js"></script>
   </body>
 </html>

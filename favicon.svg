@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Pour Happy pH</title>
+  <defs>
+    <linearGradient id="background" x1="8" y1="4" x2="58" y2="62" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1f5a4e"/>
+      <stop offset="1" stop-color="#0c2b25"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="38" y1="17" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffca45"/>
+      <stop offset="1" stop-color="#ff9d21"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="17" fill="url(#background)"/>
+  <circle cx="51" cy="13" r="5" fill="#ef6d32"/>
+  <circle cx="55" cy="24" r="2.4" fill="#cae4d8"/>
+  <text x="9" y="46" fill="#fffdf8" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="800" letter-spacing="-4">p</text>
+  <text x="30" y="46" fill="url(#accent)" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="900" letter-spacing="-3">H</text>
+</svg>

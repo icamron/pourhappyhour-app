@@ -32,5 +32,11 @@ await Promise.all([
   cp('app.js', 'dist/app.js'),
   cp('presence.js', 'dist/presence.js'),
   cp('contact.js', 'dist/contact.js'),
-  cp('privacy.js', 'dist/privacy.js')
+  cp('privacy.js', 'dist/privacy.js'),
+  cp('install-app.js', 'dist/install-app.js'),
+  cp('service-worker.js', 'dist/service-worker.js'),
+  cp('manifest.webmanifest', 'dist/manifest.webmanifest'),
+  cp('favicon.svg', 'dist/favicon.svg'),
+  cp('icon-192.png', 'dist/icon-192.png'),
+  cp('icon-512.png', 'dist/icon-512.png')
 ]);

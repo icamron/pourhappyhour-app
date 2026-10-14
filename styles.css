@@ -60,7 +60,7 @@ html[data-theme="dark"] .theme-toggle .moon-icon { opacity: 1; transform: rotate
 
 .button { border: 0; border-radius: 999px; min-height: 46px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-weight: 700; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
 .button:hover { transform: translateY(-2px); }
-.button:focus-visible, .text-button:focus-visible, .vote-button:focus-visible, .neighborhood-chip:focus-visible, .modal-close:focus-visible, .card-main:focus-visible { outline: 3px solid var(--citrus); outline-offset: 3px; }
+.button:focus-visible, .text-button:focus-visible, .vote-button:focus-visible, .neighborhood-chip:focus-visible, .modal-close:focus-visible, .card-main:focus-visible, .install-app-link:focus-visible, .install-device-tab:focus-visible, .install-got-it:focus-visible { outline: 3px solid var(--citrus); outline-offset: 3px; }
 .button-dark { color: white; background: var(--ink); box-shadow: 0 8px 20px rgba(21,60,53,.18); }
 .button-dark:hover { background: var(--ink-2); box-shadow: 0 10px 25px rgba(21,60,53,.24); }
 .button-citrus { color: var(--ink-2); background: var(--citrus); }
@@ -210,6 +210,11 @@ footer { min-height: 110px; display: flex; align-items: center; justify-content:
 footer p { margin: 0; color: #91aaa0; font-size: 12px; }
 footer .text-button { color: white; }
 .footer-links { display: flex; align-items: center; gap: 22px; }
+.install-app-link { min-height: 42px; display: inline-flex; align-items: center; gap: 9px; padding: 5px 14px 5px 6px; color: #102b25; border: 1px solid rgba(255,176,0,.72); border-radius: 999px; background: var(--citrus); box-shadow: 0 8px 24px rgba(255,176,0,.16); font-size: 12px; font-weight: 800; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; white-space: nowrap; }
+.install-app-link:hover { transform: translateY(-2px); background: #ffc13a; box-shadow: 0 11px 28px rgba(255,176,0,.24); }
+.install-app-link.is-installed { color: #f4efe5; border-color: rgba(202,228,216,.34); background: rgba(202,228,216,.12); box-shadow: none; }
+.install-app-link-icon { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--ink); }
+.install-app-link-icon svg { width: 16px; }
 
 .contact-page-body { min-height: 100vh; display: flex; flex-direction: column; }
 .contact-main { flex: 1; display: grid; background: var(--cream); }
@@ -289,6 +294,28 @@ footer a[aria-current="page"] { text-decoration: underline; text-decoration-colo
 .modal[open] { display: grid; place-items: center; }
 .modal-card { width: min(680px, 100%); max-height: min(860px, calc(100vh - 40px)); overflow-y: auto; position: relative; padding: clamp(24px, 5vw, 46px); border-radius: 22px; background: var(--paper); box-shadow: 0 28px 90px rgba(0,0,0,.28); }
 .modal-close { position: absolute; top: 16px; right: 16px; z-index: 2; width: 40px; height: 40px; border: 0; border-radius: 50%; background: #eeeae1; font-size: 27px; line-height: 1; cursor: pointer; }
+.install-app-card { width: min(490px, 100%); padding: 34px 38px 38px; border-radius: 30px; overflow: hidden auto; }
+.install-app-heading { display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: start; gap: 17px; padding-right: 34px; }
+.install-app-phone { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 17px; color: var(--orange); background: #fff2e5; box-shadow: 0 9px 24px rgba(239,109,50,.13); }
+.install-app-phone svg { width: 26px; }
+.install-app-heading .kicker { margin-bottom: 7px; font-size: 9px; }
+.install-app-heading h2 { margin: 0; font: 800 25px/1.08 'Libre Franklin', sans-serif; letter-spacing: -.045em; }
+.install-app-heading p { margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.install-device-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 27px 0 22px; padding: 5px; border-radius: 14px; background: #f0ece3; }
+.install-device-tab { min-height: 46px; border: 0; border-radius: 10px; color: #7e8581; background: transparent; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.install-device-tab span { margin-right: 4px; color: var(--orange); font-size: 10px; }
+.install-device-tab[aria-selected="true"] { color: var(--ink); background: white; box-shadow: 0 5px 18px rgba(21,60,53,.09); }
+.install-device-panel[hidden] { display: none; }
+.install-tip { display: grid; grid-template-columns: auto 1fr; gap: 8px; padding: 16px 17px; border: 1px solid #a8dfc8; border-radius: 16px; color: #12473b; background: #e7fbf3; font-size: 13px; line-height: 1.55; }
+.install-native-button { width: 100%; margin-top: 14px; }
+.install-native-button[hidden] { display: none; }
+.install-steps { display: grid; gap: 17px; margin: 22px 0 25px; padding: 0; list-style: none; }
+.install-steps li { display: grid; grid-template-columns: 27px minmax(0, 1fr); align-items: start; gap: 11px; }
+.install-steps li > span { width: 25px; height: 25px; display: grid; place-items: center; margin-top: 1px; border-radius: 50%; color: var(--ink); background: #fff0c7; font-size: 11px; font-weight: 800; }
+.install-steps p { margin: 0; color: #4d5e58; font-size: 13px; line-height: 1.58; }
+.install-steps strong { color: var(--ink); }
+.install-got-it { width: 100%; min-height: 50px; border: 0; border-radius: 14px; color: white; background: var(--ink-2); box-shadow: 0 8px 22px rgba(12,43,37,.2); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: transform .18s ease, background .18s ease; }
+.install-got-it:hover { transform: translateY(-2px); background: var(--ink); }
 .detail-card { padding: 0; }
 .detail-hero { min-height: 255px; position: relative; display: flex; align-items: end; padding: 30px; color: white; background-position: center; background-size: cover; }
 .detail-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(20deg, rgba(7,30,25,.88), rgba(7,30,25,.08)); }
@@ -575,6 +602,18 @@ html[data-theme="dark"] .empty-state { border-color: #48655d; }
 html[data-theme="dark"] footer { background: #061914; }
 html[data-theme="dark"] .modal-card { color: #f4efe5; background: #0f3029; }
 html[data-theme="dark"] .modal-close { color: #f4efe5; background: #21463d; }
+html[data-theme="dark"] .install-app-phone { color: var(--citrus); background: #352f20; box-shadow: 0 9px 24px rgba(0,0,0,.2); }
+html[data-theme="dark"] .install-app-heading p { color: #a9beb5; }
+html[data-theme="dark"] .install-device-tabs { background: #0b2822; }
+html[data-theme="dark"] .install-device-tab { color: #9eb3aa; }
+html[data-theme="dark"] .install-device-tab[aria-selected="true"] { color: #0b2a24; background: var(--citrus); box-shadow: 0 5px 18px rgba(0,0,0,.18); }
+html[data-theme="dark"] .install-device-tab[aria-selected="true"] span { color: #0b2a24; }
+html[data-theme="dark"] .install-tip { color: #c9f5e4; border-color: #316e5e; background: #123f34; }
+html[data-theme="dark"] .install-steps p { color: #b9c8c1; }
+html[data-theme="dark"] .install-steps strong { color: #f4efe5; }
+html[data-theme="dark"] .install-steps li > span { color: #0b2a24; background: var(--citrus); }
+html[data-theme="dark"] .install-got-it { color: #0b2a24; background: var(--citrus); box-shadow: 0 8px 22px rgba(0,0,0,.22); }
+html[data-theme="dark"] .install-got-it:hover { background: #ffc13a; }
 html[data-theme="dark"] .meta-box { background: #173a32; }
 html[data-theme="dark"] .meta-box span,
 html[data-theme="dark"] .deal-box span { color: #9eb3aa; }
@@ -676,6 +715,8 @@ html[data-theme="dark"] .privacy-contact-card { background: #061914; }
   .privacy-layout { grid-template-columns: 1fr; padding-top: 70px; }
   .privacy-index { position: static; }
   .privacy-index ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  footer > p { display: none; }
+  .footer-links { gap: 14px; }
 }
 
 @media (max-width: 680px) {
@@ -724,7 +765,8 @@ html[data-theme="dark"] .privacy-contact-card { background: #061914; }
   .card-image { height: 220px; }
   .community { grid-template-columns: 1fr; padding: 76px 22px; }
   footer { flex-direction: column; text-align: center; padding-block: 35px; }
-  .footer-links { flex-wrap: wrap; justify-content: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px 17px; }
+  .install-app-link { flex-basis: 100%; justify-content: center; margin-bottom: 3px; }
   .contact-shell { min-height: auto; padding: 54px 18px 70px; }
   .contact-intro h1 { font-size: clamp(54px, 17vw, 76px); }
   .contact-intro > p { font-size: 16px; }
@@ -750,6 +792,13 @@ html[data-theme="dark"] .privacy-contact-card { background: #061914; }
   .modal { padding: 0; }
   .modal[open] { align-items: end; }
   .modal-card { width: 100%; max-height: 92vh; border-radius: 22px 22px 0 0; }
+  .install-app-modal { padding: 12px; }
+  .install-app-modal[open] { align-items: center; }
+  .install-app-card { width: min(100%, 490px); max-height: calc(100svh - 24px); padding: 28px 22px 24px; border-radius: 25px; }
+  .install-app-heading { grid-template-columns: 50px minmax(0, 1fr); gap: 13px; padding-right: 30px; }
+  .install-app-phone { width: 50px; height: 50px; border-radius: 14px; }
+  .install-app-heading h2 { font-size: 21px; }
+  .install-device-tabs { margin-top: 22px; }
   .detail-hero { min-height: 225px; padding: 25px 22px; }
   .detail-body { padding: 24px 22px 30px; }
   .detail-specials-heading { align-items: flex-start; flex-direction: column; }
