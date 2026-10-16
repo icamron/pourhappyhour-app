@@ -925,6 +925,21 @@ function dailySpecialsForDay(venue, day) {
   return (venue.dailySpecials || []).filter(special => special.days.includes(day));
 }
 
+const cardDealPreviewLimit = 100;
+
+function cardDealPreviewMarkup(deals) {
+  const fullText = deals.filter(Boolean).join(' · ').replace(/\s+/g, ' ').trim();
+  if (fullText.length <= cardDealPreviewLimit) {
+    return `<span data-deal-preview>${escapeHtml(fullText)}</span>`;
+  }
+
+  let preview = fullText.slice(0, cardDealPreviewLimit).trimEnd();
+  const lastWordBreak = preview.lastIndexOf(' ');
+  if (lastWordBreak >= cardDealPreviewLimit * 0.7) preview = preview.slice(0, lastWordBreak);
+
+  return `<span data-deal-preview>${escapeHtml(preview)}</span> <span class="deal-read-more" data-read-more>Read more…</span>`;
+}
+
 function cardMarkup(venue) {
   const vote = userVotes()[venue.id] || 0;
   const favorite = isFavorite(venue.id);
@@ -949,7 +964,7 @@ function cardMarkup(venue) {
         <div class="card-location"><span>${venue.neighborhood}</span>${happeningNow ? '<span class="now-badge">● Happening now</span>' : available ? '<span class="today-badge">● Today</span>' : ''}</div>
         <h3>${venue.name}</h3>
         <div class="schedule-line"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${scheduleText}</span></div>
-        <p class="deal-list">${cardDeals.slice(0,2).map(escapeHtml).join(' · ')}</p>
+        <p class="deal-list">${cardDealPreviewMarkup(cardDeals)}</p>
       </button>
       <div class="card-footer">
         <span class="card-tag">${venue.tags.join(' · ')}</span>

@@ -157,7 +157,7 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .live-presence-dot { width: 7px; height: 7px; margin-right: 2px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px rgba(21,60,53,.13); }
 
 .venue-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.venue-card { min-width: 0; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.venue-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
 .venue-card:hover { transform: translateY(-5px); border-color: #b4c2bb; box-shadow: var(--shadow); }
 .card-image { width: 100%; height: 200px; display: block; position: relative; overflow: hidden; padding: 0; border: 0; background: var(--ink); text-align: left; cursor: pointer; }
 .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
@@ -166,7 +166,7 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .image-tags { position: absolute; left: 13px; right: 13px; bottom: 12px; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
 .price-pill { padding: 6px 9px; border-radius: 999px; backdrop-filter: blur(8px); font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .price-pill { color: white; background: rgba(21,60,53,.88); }
-.card-main { width: 100%; padding: 20px 20px 16px; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.card-main { width: 100%; flex: 1; padding: 20px 20px 16px; border: 0; background: transparent; text-align: left; cursor: pointer; }
 .card-location { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .today-badge { color: var(--sage); white-space: nowrap; }
 .now-badge { color: var(--green); background: var(--lime); border-radius: 999px; padding: 4px 7px; white-space: nowrap; }
@@ -174,6 +174,7 @@ kbd { border: 1px solid #d9d5ca; border-bottom-width: 2px; border-radius: 5px; p
 .schedule-line { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; color: #5e6862; font-size: 13px; }
 .schedule-line svg { width: 15px; }
 .deal-list { min-height: 48px; margin: 0; color: #344841; font-size: 13px; line-height: 1.55; }
+.deal-read-more { color: var(--orange); font-weight: 800; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
 .card-footer { min-height: 57px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px 10px 20px; border-top: 1px solid #e5e1d8; background: #fcfaf5; }
 .card-tag { overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .card-actions { display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto; }
